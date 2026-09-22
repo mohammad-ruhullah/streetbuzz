@@ -1,0 +1,6 @@
+{
+  "name": "STREETBUZZ",
+  "description": "Creative Outdoor Marketing — We turn streets, spaces and everyday moments into brand experiences people notice. Make noise outside.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

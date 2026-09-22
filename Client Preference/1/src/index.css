@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-black: #0A0A0A;
+    --color-white: #FFFFFF;
+    --color-offwhite: #F7F7F5;
+    --color-darkgray: #222222;
+    --color-neon: #CCFF00;
+  }
+
+  body {
+    background-color: #F7F7F5;
+    color: #0A0A0A;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.015em;
+    overflow-x: hidden;
+  }
+}
+
+.font-handwriting {
+  font-family: 'Caveat', cursive;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+}
+
+/* Subtle editorial grain overlay */
+.bg-grain {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.bg-grain-dark {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+

@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --buzz-black: #0A0A0A;
+    --buzz-warm: #F5F4EF;
+    --buzz-lime: #CCFF00;
+    --buzz-lime-dark: #A6D400;
+    --buzz-gray: #71717A;
+    --buzz-border: #E6E5DE;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F5F4EF;
+    color: #0A0A0A;
+    selection-background-color: #CCFF00;
+    selection-color: #0A0A0A;
+  }
+
+  ::selection {
+    background-color: #CCFF00;
+    color: #0A0A0A;
+  }
+}
+
+/* Custom utility classes */
+.bg-buzz-black {
+  background-color: #0A0A0A;
+}
+
+.bg-buzz-warm {
+  background-color: #F5F4EF;
+}
+
+.bg-buzz-lime {
+  background-color: #CCFF00;
+}
+
+.text-buzz-lime {
+  color: #CCFF00;
+}
+
+.border-buzz-lime {
+  border-color: #CCFF00;
+}
+
+.text-buzz-black {
+  color: #0A0A0A;
+}
+
+.text-buzz-warm {
+  color: #F5F4EF;
+}
+
+.border-buzz-border {
+  border-color: #E6E5DE;
+}
+
+.border-buzz-dark-border {
+  border-color: #262626;
+}

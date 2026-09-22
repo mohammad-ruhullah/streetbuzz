@@ -1,0 +1,6 @@
+{
+  "name": "StreetBuzz",
+  "description": "StreetBuzz is a creative outdoor marketing company creating mobile advertising, outdoor campaigns, guerrilla marketing and real-world brand experiences that get noticed.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
