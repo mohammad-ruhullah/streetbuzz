@@ -6,28 +6,14 @@
 import React, { useState, useEffect } from 'react';
 import { X, Menu, ArrowUpRight, ArrowUp, Mail } from 'lucide-react';
 
-// AI-generated placeholder photography. Replaced by client-supplied campaign
-// shots via Sanity in P7 — see the plan's image findings.
+import { content } from '@/content';
+import type { ProjectItem } from '@/content';
+
+// Hero and AdCycle photography is still bundled locally. Campaign shots for the
+// portfolio and services are supplied by the client via Sanity — see
+// src/content/ and scripts/sync-content.mjs.
 import heroAdcycleImg from './assets/images/adcycle_hero_1789635455161.jpg';
 import matteBlackAdcycleImg from './assets/images/adcycle_matte_black_1789635469186.jpg';
-import cpdlCampaignImg from './assets/images/cpdl_campaign_1789635488069.jpg';
-// Portfolio imagery ported from design 2. Design 2's hero is deliberately NOT
-// copied across: it shows real third-party storefronts and vans (The North Face,
-// Patagonia, Adidas, Pret, SoulCycle), which on an agency homepage would imply
-// those brands are clients.
-import campusImg from './assets/images/streetbuzz_campus_1789638840531.jpg';
-import bikeOohImg from './assets/images/streetbuzz_bike_ooh_1789638793141.jpg';
-import attentionImg from './assets/images/streetbuzz_attention_1789638820764.jpg';
-import takeoverImg from './assets/images/streetbuzz_takeover_1789638858118.jpg';
-
-interface ServiceItem {
-  id: string;
-  number: string;
-  title: string;
-  description: string;
-  formatDetail: string;
-  image: string;
-}
 
 interface ProcessStep {
   number: string;
@@ -39,25 +25,9 @@ interface ProcessStep {
   timeline: string;
 }
 
-interface ProjectItem {
-  id: string;
-  title: string;
-  category: string;
-  tagline: string;
-  description: string;
-  image: string;
-  /** Renders the CONCEPT badge. Defaults ON per project until the client
-   *  confirms a campaign was genuinely delivered. The imagery is currently
-   *  AI-generated, so nothing may read as delivered client work. */
-  isConcept: boolean;
-  year: string;
-  /** Drives both the card chips and the filter pills. Pills are DERIVED from
-   *  these (any tag on 2+ projects), never hardcoded — design 2 hardcoded a
-   *  5-entry list that silently desyncs from the data. */
-  tags: string[];
-}
-
 export default function App() {
+  const { services, projects, adCycleZones, siteSettings } = content;
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredService, setHoveredService] = useState<number | null>(0);
@@ -67,7 +37,8 @@ export default function App() {
   const [projectFilter, setProjectFilter] = useState<string>('ALL');
 
   // Form submission state
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [formError, setFormError] = useState('');
   const [formData, setFormData] = useState({
     brandName: '',
     email: '',
@@ -89,97 +60,9 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const services: ServiceItem[] = [
-    {
-      id: 'outdoor-advertising',
-      number: '01',
-      title: 'Outdoor Advertising',
-      description: 'High-impact physical formats tailored to prominent urban corridors, pedestrian hubs, and commercial epicenters.',
-      formatDetail: 'Large-format hoardings, high-street installations, custom transit placements',
-      image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=900&auto=format&fit=crop'
-    },
-    {
-      id: 'mobile-advertising',
-      number: '02',
-      title: 'Mobile Advertising',
-      description: 'Dynamic media in motion. Taking your visual message directly to campuses, shopping districts, and high-footfall intersections.',
-      formatDetail: 'AdCycle bicycle fleets, moving typographic media, targeted urban routes',
-      image: heroAdcycleImg
-    },
-    {
-      id: 'guerrilla-marketing',
-      number: '03',
-      title: 'Guerrilla Marketing',
-      description: 'Unconventional, provocative brand moments that interrupt the mundane and spark organic word-of-mouth conversation.',
-      formatDetail: 'Stealth sidewalk art, projection mapping, unexpected ambient installations',
-      image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=900&auto=format&fit=crop'
-    },
-    {
-      id: 'experiential-marketing',
-      number: '04',
-      title: 'Experiential Marketing',
-      description: 'Sensory-rich environments where audiences do not just see your brand — they touch, hear, sample, and remember it.',
-      formatDetail: 'Sensory scent tunnels, pop-up architectural pods, live customer engagements',
-      image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=900&auto=format&fit=crop'
-    },
-    {
-      id: 'brand-activations',
-      number: '05',
-      title: 'Brand Activations',
-      description: 'Energetic street-level rollouts designed to turn passive onlookers into active participants and loyal advocates.',
-      formatDetail: 'Product sampling units, live brand ambassador teams, campus takeovers',
-      image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=900&auto=format&fit=crop'
-    },
-    {
-      id: 'custom-outdoor-campaigns',
-      number: '06',
-      title: 'Custom Outdoor Campaigns',
-      description: 'Bespoke, one-of-a-kind physical structures engineered from scratch for brands with bold, uncompromising ideas.',
-      formatDetail: 'Architectural scale replicas, kinetic displays, sustainable solar media',
-      image: cpdlCampaignImg
-    }
-  ];
-
-  // AdCycle deployment coverage.
-  // PLACEHOLDER DATA: these are real high-footfall commercial and pedestrian
-  // districts in each city, but nobody has confirmed which ones StreetBuzz
-  // actually runs routes through. Confirm with the client before launch.
-  const adCycleZones: { city: string; note: string; areas: string[] }[] = [
-    {
-      city: 'CHATTOGRAM',
-      note: 'Primary operating base',
-      areas: [
-        'GEC Circle',
-        'Agrabad Commercial Area',
-        'Nasirabad',
-        'Khulshi',
-        'Muradpur',
-        'New Market & Station Road',
-        'Chawkbazar',
-        'Jamal Khan',
-        'Halishahar',
-        'Oxygen More',
-        'Pahartali',
-        'CUET & University Corridor',
-      ],
-    },
-    {
-      city: 'DHAKA',
-      note: 'Metro deployment network',
-      areas: [
-        'Gulshan',
-        'Banani',
-        'Dhanmondi',
-        'Uttara',
-        'Motijheel',
-        'Mirpur',
-        'Bashundhara',
-        'Mohakhali',
-        'Farmgate',
-        'Tejgaon',
-      ],
-    },
-  ];
+  // `services`, `projects`, `adCycleZones` and `siteSettings` now come from the
+  // CMS content layer (`@/content`): Sanity when configured, committed fallback
+  // otherwise. See src/content/index.ts.
 
   // Ported from design 2 (Client Preference/2/src/data.ts PROCESS_STEPS).
   const processSteps: ProcessStep[] = [
@@ -225,61 +108,9 @@ export default function App() {
     },
   ];
 
-  // Ported from design 2 (Client Preference/2/src/data.ts PORTFOLIO).
-  // `tags` carry extra, defensible entries beyond design 2's so that every
-  // derived filter pill returns more than one card: a campus pop-up IS a street
-  // activation, a city takeover IS experiential, an illuminated poster unit IS
-  // creative OOH. Nothing here claims a discipline the project doesn't have.
-  const projects: ProjectItem[] = [
-    {
-      id: 'campus-meets-city',
-      title: 'CAMPUS MEETS CITY',
-      category: 'Experiential / Mobile OOH',
-      tagline: 'Synchronized mobile media fleets circulating student hubs during orientation week.',
-      description:
-        'A coordinated campaign synchronizing mobile OOH units with pop-up coffee activations across major metropolitan university districts, sparking spontaneous student gatherings.',
-      image: campusImg,
-      isConcept: true,
-      year: '2026',
-      tags: ['Experiential', 'Mobile OOH', 'Street Activation', 'Sampling'],
-    },
-    {
-      id: 'the-moving-billboard',
-      title: 'THE MOVING BILLBOARD',
-      category: 'Mobile OOH',
-      tagline: 'High-visibility illuminated poster units in pedestrian-exclusive avenues.',
-      description:
-        'Backlit dual-facing poster frames routed continuously through pedestrian-only retail corridors, turning dwell time in the busiest streets into repeated brand exposure.',
-      image: bikeOohImg,
-      isConcept: true,
-      year: '2026',
-      tags: ['Mobile OOH', 'Creative OOH', 'Pedestrian Zones', 'Backlit Poster'],
-    },
-    {
-      id: 'the-unexpected-billboard',
-      title: 'THE UNEXPECTED BILLBOARD',
-      category: 'Creative OOH',
-      tagline: 'Architectural context-responsive installations disrupting street corners.',
-      description:
-        'Sculptural typographic structures built to respond to the architecture around them, engineered so passers-by stop, photograph and share rather than walk past.',
-      image: attentionImg,
-      isConcept: true,
-      year: '2026',
-      tags: ['Creative OOH', 'Architectural', 'Minimalist'],
-    },
-    {
-      id: 'city-takeover',
-      title: 'CITY TAKEOVER',
-      category: 'Street Activation',
-      tagline: 'Full-spectrum multi-touchpoint street takeover across high-density intersections.',
-      description:
-        'A saturation campaign combining wall murals, neon installations and ambient placements across twelve high-density intersections, so the brand becomes unavoidable on a single walk.',
-      image: takeoverImg,
-      isConcept: true,
-      year: '2026',
-      tags: ['Street Activation', 'Experiential', 'Guerrilla', 'Multi-Touchpoint'],
-    },
-  ];
+  // Portfolio projects come from the CMS content layer. Tags drive the derived
+  // filter pills below: a tag earns a pill once 2+ projects carry it, so the
+  // list grows on its own as the portfolio does and can never desync.
 
   // Filter pills, derived. A tag earns a pill once 2+ projects carry it, so the
   // list grows on its own as the portfolio does and can never desync.
@@ -299,16 +130,65 @@ export default function App() {
   const visibleProjects =
     projectFilter === 'ALL' ? projects : projects.filter((p) => p.tags.includes(projectFilter));
 
-  const handleSubmitInquiry = (e: React.FormEvent) => {
+  // Form dropdowns come from Site Settings. If the CMS lists are empty, keep the
+  // currently selected value as the only option so the controlled select never
+  // renders blank.
+  const formatOptions =
+    siteSettings.formFormatOptions.length > 0
+      ? siteSettings.formFormatOptions
+      : [formData.format];
+  const cityOptions =
+    siteSettings.formCityOptions.length > 0 ? siteSettings.formCityOptions : [formData.city];
+
+  const handleSubmitInquiry = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
+
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY;
+    if (!accessKey) {
+      setFormStatus('error');
+      setFormError('The inquiry form is not configured yet (missing Web3Forms access key).');
+      return;
+    }
+
+    setFormStatus('submitting');
+    setFormError('');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New StreetBuzz Inquiry — ${formData.brandName || 'Untitled brand'}`,
+          from_name: 'StreetBuzz Website',
+          brand: formData.brandName,
+          email: formData.email,
+          format: formData.format,
+          city: formData.city,
+          message: formData.message,
+          botcheck: false,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setFormStatus('success');
+      } else {
+        setFormStatus('error');
+        setFormError(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setFormStatus('error');
+      setFormError('Network error. Please check your connection and try again.');
+    }
   };
 
   const handleOpenTalk = (formatName?: string) => {
     if (formatName) {
       setFormData(prev => ({ ...prev, format: formatName }));
     }
-    setFormSubmitted(false);
+    setFormStatus('idle');
+    setFormError('');
     setTalkModalOpen(true);
   };
 
@@ -1294,11 +1174,11 @@ export default function App() {
               </button>
 
               <a
-                href="mailto:hello@wearestreetbuzz.com"
+                href={`mailto:${siteSettings.contactEmail}`}
                 className="group inline-flex items-center gap-2 text-sm sm:text-base font-bold text-ink border-b-2 border-transparent hover:border-lime pb-1 transition-colors"
               >
                 <Mail size={18} className="text-mute group-hover:text-ink transition-colors" aria-hidden="true" />
-                <span>hello@wearestreetbuzz.com</span>
+                <span>{siteSettings.contactEmail}</span>
                 <ArrowUpRight
                   size={16}
                   className="text-mute group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
@@ -1310,10 +1190,10 @@ export default function App() {
             <div className="mt-12 pt-8 border-t border-ink/10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-mute">
               <span>FOR DIRECT INQUIRIES &amp; FOUNDER BRIEFINGS:</span>
               <a
-                href="mailto:ceo@wearestreetbuzz.com"
+                href={`mailto:${siteSettings.founderEmail}`}
                 className="text-ink font-bold underline underline-offset-4 hover:text-mute transition-colors"
               >
-                ceo@wearestreetbuzz.com
+                {siteSettings.founderEmail}
               </a>
             </div>
           </div>
@@ -1379,24 +1259,20 @@ export default function App() {
                   CONTACT
                 </p>
                 <a
-                  href="mailto:hello@wearestreetbuzz.com"
+                  href={`mailto:${siteSettings.contactEmail}`}
                   className="block text-base sm:text-lg font-bold text-chalk hover:text-lime transition-colors mb-6"
                 >
-                  hello@wearestreetbuzz.com
+                  {siteSettings.contactEmail}
                 </a>
 
                 <p className="text-xs font-mono uppercase tracking-label text-chalk-3 mb-3">
                   SOCIAL
                 </p>
                 <div className="flex flex-wrap gap-4 text-xs font-mono font-bold tracking-wider">
-                  {[
-                    { label: 'Instagram', href: 'https://instagram.com/wearestreetbuzz' },
-                    { label: 'Facebook', href: 'https://facebook.com/wearestreetbuzz' },
-                    { label: 'LinkedIn', href: 'https://linkedin.com/company/streetbuzz' },
-                  ].map((social) => (
+                  {siteSettings.socials.map((social) => (
                     <a
                       key={social.label}
-                      href={social.href}
+                      href={social.url}
                       target="_blank"
                       rel="noreferrer"
                       className="uppercase text-chalk-2 hover:text-lime border-b border-edge-2 pb-0.5 transition-colors"
@@ -1446,7 +1322,7 @@ export default function App() {
               <X size={24} />
             </button>
 
-            {formSubmitted ? (
+            {formStatus === 'success' ? (
               <div className="py-10 text-center">
                 <div className="w-12 h-12 bg-lime text-black flex items-center justify-center mx-auto mb-5 rounded-full font-bold text-xl">
                   ✓
@@ -1520,12 +1396,11 @@ export default function App() {
                         onChange={(e) => setFormData({ ...formData, format: e.target.value })}
                         className="w-full px-3 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
                       >
-                        <option value="AdCycle — Mobile Advertising Bicycle">AdCycle (Bicycle Media)</option>
-                        <option value="Outdoor Advertising">Outdoor Advertising (OOH)</option>
-                        <option value="Guerrilla Marketing">Guerrilla Marketing</option>
-                        <option value="Experiential Marketing">Experiential Marketing</option>
-                        <option value="Brand Activations">Brand Activations</option>
-                        <option value="Custom Outdoor Campaigns">Custom Media Installation</option>
+                        {formatOptions.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
@@ -1538,10 +1413,11 @@ export default function App() {
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         className="w-full px-3 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
                       >
-                        <option value="Chattogram">Chattogram</option>
-                        <option value="Dhaka">Dhaka</option>
-                        <option value="Multi-city Bangladesh">Multi-city Bangladesh</option>
-                        <option value="International / Other">Other</option>
+                        {cityOptions.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -1561,10 +1437,17 @@ export default function App() {
 
                   <button
                     type="submit"
-                    className="w-full py-4 bg-ink text-chalk font-bold uppercase tracking-btn hover:bg-lime hover:text-ink transition-colors mt-2"
+                    disabled={formStatus === 'submitting'}
+                    className="w-full py-4 bg-ink text-chalk font-bold uppercase tracking-btn hover:bg-lime hover:text-ink transition-colors mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    SEND INQUIRY →
+                    {formStatus === 'submitting' ? 'SENDING…' : 'SEND INQUIRY →'}
                   </button>
+
+                  {formStatus === 'error' && (
+                    <p role="alert" className="text-red-700 font-semibold">
+                      {formError}
+                    </p>
+                  )}
                 </form>
               </div>
             )}

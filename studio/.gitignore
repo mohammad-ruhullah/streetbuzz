@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-ssr
+.sanity
+.env
+.env.*
+!.env.example
+.DS_Store
