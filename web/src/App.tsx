@@ -558,53 +558,6 @@ export default function App() {
       </section>
 
       {/* --------------------------------------------------
-          INTRODUCTION
-          White background.
-          Small label: STREETBUZZ
-          Large text:
-          WE PUT
-          GOOD IDEAS
-          OUTSIDE.
-          Short paragraph:
-          From mobile advertising to street activations, we create creative
-          outdoor campaigns designed to get brands noticed in the real world.
-      -------------------------------------------------- */}
-      <section id="introduction-section" className="bg-canvas border-y border-black/10 py-24 sm:py-32 px-gutter">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            
-            {/* Small label */}
-            <div className="lg:col-span-3">
-              <span className="inline-block text-xs font-bold uppercase tracking-label text-ink border-l-2 border-lime pl-3">
-                STREETBUZZ
-              </span>
-            </div>
-
-            {/* Large text & paragraph */}
-            <div className="lg:col-span-9">
-              <h2 className="text-display font-extrabold tracking-display uppercase leading-display mb-8">
-                WE PUT<br />
-                GOOD IDEAS<br />
-                OUTSIDE.
-              </h2>
-              
-              <p className="text-xl sm:text-2xl text-body font-normal leading-relaxed max-w-3xl border-t border-black/10 pt-8">
-                From mobile advertising to street activations, we create creative outdoor campaigns designed to get brands noticed in the real world.
-              </p>
-
-              {/* Minimal agency manifesto pills */}
-              <div className="flex flex-wrap gap-3 mt-10 text-xs font-bold uppercase tracking-meta text-ink">
-                <span className="px-3.5 py-1.5 border border-black/15 bg-paper">No Screens Required</span>
-                <span className="px-3.5 py-1.5 border border-black/15 bg-paper">High-Footfall Corridors</span>
-                <span className="px-3.5 py-1.5 border border-black/15 bg-paper">Tactile Engagement</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* --------------------------------------------------
           SERVICES
           Keep this very minimal.
           Heading: WHAT WE DO
