@@ -56,17 +56,24 @@ export default function App() {
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
 
-  // Track scroll position to transition navigation to black with white text
+  // Track scroll position to transition navigation to black with white text.
+  // Desktop delays the switch until the (pinned) hero has fully scrolled out;
+  // mobile keeps the original short threshold.
   useEffect(() => {
+    const desktopQuery = window.matchMedia('(min-width: 1024px)');
     const handleScroll = () => {
-      if (window.scrollY > 60) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      const hero = heroSectionRef.current;
+      const threshold =
+        desktopQuery.matches && hero ? hero.offsetTop + hero.offsetHeight : 60;
+      setIsScrolled(window.scrollY > threshold);
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
   // Bind the hero video's playhead to the hero section's scroll progress.
