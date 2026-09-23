@@ -206,13 +206,13 @@ export default function App() {
       -------------------------------------------------- */}
       <nav 
         id="main-navigation"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 px-gutter transition-all duration-300 ${
           isScrolled 
             ? 'bg-ink text-chalk border-b border-edge shadow-md py-4' 
             : 'bg-canvas text-ink border-b border-black/10 py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-gutter flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* LEFT: StreetBuzz logo */}
           <a 
             href="#" 
@@ -284,7 +284,7 @@ export default function App() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className={`md:hidden px-6 pt-4 pb-6 border-t ${isScrolled ? 'bg-ink text-chalk border-edge' : 'bg-canvas text-ink border-black/10'}`}>
+          <div className={`md:hidden pt-4 pb-6 border-t ${isScrolled ? 'bg-ink text-chalk border-edge' : 'bg-canvas text-ink border-black/10'}`}>
             <div className="flex flex-col gap-4 text-sm font-bold uppercase tracking-nav">
               <a 
                 href="#work" 
@@ -343,8 +343,8 @@ export default function App() {
           One strong, realistic photograph beside or underneath.
           Handwritten-style note: CREATIVE ADVERTISING THAT MOVES.
       -------------------------------------------------- */}
-      <section id="hero-section" className="pt-hero-top pb-hero-bottom px-gutter max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
+      <section id="hero-section" className="pt-hero-top pb-hero-bottom px-gutter">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
           
           {/* Hero Typography Column */}
           <div className="lg:col-span-7 flex flex-col justify-between">
@@ -616,7 +616,8 @@ export default function App() {
           On hover, show a small image or short description.
           No complicated icons.
       -------------------------------------------------- */}
-      <section id="services" className="py-24 sm:py-32 px-gutter max-w-7xl mx-auto">
+      <section id="services" className="py-24 sm:py-32 px-gutter">
+        <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-black/15 gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-label text-black/60 mb-2">SERVICES & CAPABILITIES</p>
@@ -716,6 +717,7 @@ export default function App() {
               )}
             </div>
           </div>
+        </div>
         </div>
       </section>
 
@@ -876,7 +878,8 @@ export default function App() {
             Design 2's header chip ("ALL LABELED AS: CONCEPT") is dropped; the
             per-card badges carry the labelling on their own.
       -------------------------------------------------- */}
-      <section id="work" className="py-28 sm:py-36 px-gutter max-w-7xl mx-auto">
+      <section id="work" className="py-28 sm:py-36 px-gutter">
+        <div className="max-w-7xl mx-auto">
         {/* Section header */}
         <div className="border-b border-ink pb-8 mb-12">
           <span className="block text-xs font-mono font-bold uppercase tracking-label text-mute mb-4">
@@ -990,6 +993,7 @@ export default function App() {
             <span className="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
           </button>
         </div>
+        </div>
       </section>
 
       {/* --------------------------------------------------
@@ -1082,7 +1086,8 @@ export default function App() {
           FLEXIBLE - Campaigns designed around your audience.
           MEMORABLE - Built to make people notice.
       -------------------------------------------------- */}
-      <section id="why-streetbuzz" className="py-24 sm:py-32 px-gutter max-w-7xl mx-auto">
+      <section id="why-streetbuzz" className="py-24 sm:py-32 px-gutter">
+        <div className="max-w-7xl mx-auto">
         <div className="mb-16">
           <span className="text-xs font-bold uppercase tracking-label text-black/60 block mb-2">PRINCIPLES</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">WHY STREETBUZZ</h2>
@@ -1126,6 +1131,7 @@ export default function App() {
             <div className="w-6 h-[2px] bg-lime mt-8" />
           </div>
 
+        </div>
         </div>
       </section>
 
