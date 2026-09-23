@@ -42,6 +42,7 @@ export default function App() {
   const [formData, setFormData] = useState({
     brandName: '',
     email: '',
+    phone: '',
     format: 'AdCycle — Mobile Advertising Bicycle',
     city: 'Chattogram',
     message: ''
@@ -163,6 +164,7 @@ export default function App() {
           from_name: 'StreetBuzz Website',
           brand: formData.brandName,
           email: formData.email,
+          phone: formData.phone,
           format: formData.format,
           city: formData.city,
           message: formData.message,
@@ -1340,6 +1342,7 @@ export default function App() {
                 <div className="p-4 bg-paper border border-black/10 text-xs font-mono text-left mb-6">
                   <p><span className="text-black/50 uppercase">Format:</span> {formData.format}</p>
                   <p><span className="text-black/50 uppercase">Market:</span> {formData.city}</p>
+                  <p><span className="text-black/50 uppercase">Phone:</span> {formData.phone}</p>
                   <p><span className="text-black/50 uppercase">Contact:</span> {formData.email}</p>
                 </div>
                 <button
@@ -1378,18 +1381,36 @@ export default function App() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block uppercase font-bold tracking-wider text-black/70 mb-1">
-                      Work Email
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="brand@company.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block uppercase font-bold tracking-wider text-black/70 mb-1">
+                        Work Email
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="brand@company.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="inquiry-phone" className="block uppercase font-bold tracking-wider text-black/70 mb-1">
+                        Mobile Number
+                      </label>
+                      <input
+                        id="inquiry-phone"
+                        type="tel"
+                        inputMode="tel"
+                        required
+                        placeholder="+880 1XXX-XXXXXX"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
