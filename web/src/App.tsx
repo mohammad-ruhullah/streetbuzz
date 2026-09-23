@@ -1571,7 +1571,7 @@ export default function App() {
                 <span className="text-[11px] font-mono text-lime uppercase block mb-1">DISPLAY ARCHITECTURE</span>
                 <p className="font-bold text-base mb-1">Dual-Facing Poster Frame</p>
                 <p className="text-xs text-chalk-3">
-                  120cm × 180cm high-resolution weather-resistant display panels with internal solar LED backlighting for dusk/night visibility.
+                  3.5 ft × 5 ft high-resolution weather-resistant display panels.
                 </p>
               </div>
 
