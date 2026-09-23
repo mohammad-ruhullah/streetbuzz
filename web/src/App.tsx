@@ -465,7 +465,7 @@ export default function App() {
                 className="group flex flex-col justify-between min-h-[300px] p-6 sm:p-8 bg-canvas hover:bg-paper-2 transition-colors"
               >
                 <div>
-                  <span className="block font-black text-5xl sm:text-6xl lg:text-7xl tracking-tighter text-ink/20 group-hover:text-ink transition-colors mb-6">
+                  <span className="block w-fit font-black text-5xl sm:text-6xl lg:text-7xl tracking-tighter bg-lime text-ink px-3 py-1 mb-6 transition-colors group-hover:bg-ink group-hover:text-lime">
                     {step.number}
                   </span>
 
