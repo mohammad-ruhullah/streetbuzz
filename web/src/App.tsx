@@ -49,9 +49,10 @@ export default function App() {
     message: ''
   });
 
-  // Scroll-scrubbed hero video. The clip never autoplays: as the hero section
-  // scrolls past, its scroll progress drives `currentTime`, so the AdCycle
-  // appears to ride with the scroll and rewinds on the way back up.
+  // Scroll-scrubbed hero video. The clip never autoplays: its scroll progress
+  // drives `currentTime`, so the AdCycle appears to ride with the scroll and
+  // rewinds on the way back up. On desktop the hero is pinned inside a taller
+  // wrapper (see #hero-section), giving the ride a longer runway.
   const heroSectionRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -77,6 +78,9 @@ export default function App() {
     // Respect reduced-motion: leave the poster frame fixed.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    // Desktop pins the hero inside a taller wrapper; mobile does not.
+    const desktopQuery = window.matchMedia('(min-width: 1024px)');
+
     let duration = Number.isFinite(video.duration) ? video.duration : 0;
     let rafId = 0;
 
@@ -93,8 +97,14 @@ export default function App() {
       rafId = 0;
       if (!duration) return;
       const rect = section.getBoundingClientRect();
-      const progress = Math.min(1, Math.max(0, -rect.top / rect.height));
-      const target = progress * duration;
+      // Desktop pins the hero inside a taller wrapper, so the scroll runway is
+      // the wrapper height minus one viewport. Mobile fits to the section alone.
+      const progress = desktopQuery.matches
+        ? Math.min(1, Math.max(0, -rect.top / Math.max(rect.height - window.innerHeight, 1)))
+        : Math.min(1, Math.max(0, -rect.top / rect.height));
+      // Finish the ride at ~85% of the scroll, then rest on the final frame.
+      const videoProgress = Math.min(1, progress / 0.85);
+      const target = videoProgress * duration;
       // Ignore sub-frame jitter to avoid pointless decode churn.
       if (Math.abs(video.currentTime - target) > 1 / 60) {
         video.currentTime = target;
@@ -403,8 +413,13 @@ export default function App() {
           One strong, realistic photograph beside or underneath.
           Handwritten-style note: CREATIVE ADVERTISING THAT MOVES.
       -------------------------------------------------- */}
-      <section id="hero-section" ref={heroSectionRef} className="pt-hero-top pb-hero-bottom px-gutter">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
+      <section
+        id="hero-section"
+        ref={heroSectionRef}
+        className="relative lg:h-[200vh] motion-reduce:lg:h-auto"
+      >
+        <div className="lg:sticky lg:top-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center px-gutter pt-hero-top pb-hero-bottom motion-reduce:lg:static motion-reduce:lg:min-h-0">
+          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
           
           {/* Hero Typography Column */}
           <div className="lg:col-span-7 flex flex-col justify-between">
@@ -491,6 +506,7 @@ export default function App() {
             </div>
           </div>
 
+        </div>
         </div>
       </section>
 
