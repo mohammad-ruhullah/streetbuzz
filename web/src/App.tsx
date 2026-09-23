@@ -90,19 +90,13 @@ export default function App() {
 
     let duration = Number.isFinite(video.duration) ? video.duration : 0;
     let rafId = 0;
+    // Video frames are 1/FPS apart; seeking to an exact frame avoids redundant
+    // seeks that decode the same picture again.
+    const FPS = 24;
+    let desiredFrame = 0;
+    let hasDesired = false;
 
-    const handleLoadedMetadata = () => {
-      duration = video.duration || 0;
-      // Nudge Safari into decoding the first frame instead of leaving it black.
-      if (video.currentTime === 0) video.currentTime = 0.001;
-      // Sync immediately in case the page loaded already scrolled.
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(updateFrame);
-    };
-
-    const updateFrame = () => {
-      rafId = 0;
-      if (!duration) return;
+    const computeDesiredFrame = () => {
       const rect = section.getBoundingClientRect();
       // Desktop pins the hero inside a taller wrapper, so the scroll runway is
       // the wrapper height minus one viewport. Mobile fits to the section alone.
@@ -111,25 +105,51 @@ export default function App() {
         : Math.min(1, Math.max(0, -rect.top / rect.height));
       // Finish the ride at ~85% of the scroll, then rest on the final frame.
       const videoProgress = Math.min(1, progress / 0.85);
-      const target = videoProgress * duration;
-      // Ignore sub-frame jitter to avoid pointless decode churn.
-      if (Math.abs(video.currentTime - target) > 1 / 60) {
-        video.currentTime = target;
+      const totalFrames = Math.max(1, Math.round(duration * FPS) - 1);
+      desiredFrame = Math.round(videoProgress * totalFrames);
+      hasDesired = true;
+    };
+
+    // Apply the latest desired frame. Never issue a seek while one is in flight:
+    // the 'seeked' handler re-runs this once the browser catches up, so fast
+    // scrolling converges on the newest position instead of stacking cancels.
+    // (fastSeek is avoided — at GOP 2 it snaps to even frames and looks choppy.)
+    const applyFrame = () => {
+      if (!duration || !hasDesired || video.seeking) return;
+      const currentFrame = Math.round(video.currentTime * FPS);
+      if (desiredFrame !== currentFrame) {
+        video.currentTime = desiredFrame / FPS;
       }
     };
 
     const handleScroll = () => {
-      if (!rafId) rafId = requestAnimationFrame(updateFrame);
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          computeDesiredFrame();
+          applyFrame();
+        });
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      duration = video.duration || 0;
+      // Nudge Safari into decoding the first frame instead of leaving it black.
+      if (video.currentTime === 0) video.currentTime = 0.001;
+      // Sync immediately in case the page loaded already scrolled.
+      handleScroll();
     };
 
     if (video.readyState >= 1) handleLoadedMetadata();
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('seeked', applyFrame);
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
-    updateFrame();
+    handleScroll();
 
     return () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('seeked', applyFrame);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
       if (rafId) cancelAnimationFrame(rafId);
