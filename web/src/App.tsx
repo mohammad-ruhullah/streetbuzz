@@ -304,10 +304,8 @@ export default function App() {
       -------------------------------------------------- */}
       <nav 
         id="main-navigation"
-        className={`fixed top-0 left-0 right-0 z-50 px-gutter transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-ink text-chalk border-b border-edge shadow-md py-4' 
-            : 'bg-canvas text-ink border-b border-black/10 py-5'
+        className={`fixed top-0 left-0 right-0 z-50 px-gutter transition-all duration-300 bg-canvas text-ink border-b border-black/10 ${
+          isScrolled ? 'shadow-md py-4' : 'py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -315,9 +313,7 @@ export default function App() {
           <a 
             href="#" 
             id="nav-logo" 
-            className={`inline-flex items-center -mx-2 px-2 py-1 group transition-colors ${
-              isScrolled ? 'bg-canvas' : ''
-            }`}
+            className="inline-flex items-center group"
           >
             <img
               src={logoStreetbuzz}
@@ -363,11 +359,7 @@ export default function App() {
             <button
               onClick={() => handleOpenTalk()}
               id="nav-cta-btn"
-              className={`hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-meta px-5 py-2.5 transition-all ${
-                isScrolled
-                  ? 'bg-lime text-ink hover:bg-canvas hover:text-black'
-                  : 'bg-ink text-chalk hover:bg-black/85'
-              }`}
+              className="hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-meta px-5 py-2.5 transition-all bg-ink text-chalk hover:bg-black/85"
             >
               <span>LET'S TALK</span>
               <span className="text-sm">→</span>
@@ -387,7 +379,7 @@ export default function App() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className={`md:hidden pt-4 pb-6 border-t ${isScrolled ? 'bg-ink text-chalk border-edge' : 'bg-canvas text-ink border-black/10'}`}>
+          <div className="md:hidden pt-4 pb-6 border-t bg-canvas text-ink border-black/10">
             <div className="flex flex-col gap-4 text-sm font-bold uppercase tracking-nav">
               <a 
                 href="#work" 
