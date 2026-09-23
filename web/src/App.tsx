@@ -96,6 +96,10 @@ export default function App() {
     const FPS = 24;
     let desiredFrame = 0;
     let hasDesired = false;
+    // Last frame we actually seeked to, and last observed scroll position, so
+    // the clip can only rewind when the user is genuinely scrolling up.
+    let appliedFrame = 0;
+    let lastScrollY = window.scrollY;
 
     const computeDesiredFrame = () => {
       const rect = section.getBoundingClientRect();
@@ -107,7 +111,16 @@ export default function App() {
       // Finish the ride at ~85% of the scroll, then rest on the final frame.
       const videoProgress = Math.min(1, progress / 0.85);
       const totalFrames = Math.max(1, Math.round(duration * FPS) - 1);
-      desiredFrame = Math.round(videoProgress * totalFrames);
+      let frame = Math.round(videoProgress * totalFrames);
+
+      // Direction with ~2px hysteresis. While not scrolling up, clamp so a
+      // toolbar resize / momentum blip can't drag the clip backward.
+      const y = window.scrollY;
+      const scrollingUp = y < lastScrollY - 2;
+      lastScrollY = y;
+      if (!scrollingUp) frame = Math.max(frame, appliedFrame);
+
+      desiredFrame = frame;
       hasDesired = true;
     };
 
@@ -120,6 +133,7 @@ export default function App() {
       const currentFrame = Math.round(video.currentTime * FPS);
       if (desiredFrame !== currentFrame) {
         video.currentTime = desiredFrame / FPS;
+        appliedFrame = desiredFrame;
       }
     };
 

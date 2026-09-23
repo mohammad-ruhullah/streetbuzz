@@ -96,6 +96,18 @@
   }
 }
 
+/* Toolbar-stable hero spacing. The mobile scroll-scrub maps scroll progress to
+   the hero's height, so it must not change when the URL bar hides mid-scroll.
+   `svh` is the toolbar-shown viewport height and stays constant; desktop has no
+   dynamic toolbar, so `svh` == `vh` there. Browsers without `svh` keep the
+   `vh` values declared above. */
+@supports (height: 100svh) {
+  :root {
+    --spacing-hero-top:    clamp(7rem, 12svh, 11rem);
+    --spacing-hero-bottom: clamp(4rem, 8svh, 7rem);
+  }
+}
+
 /* ============================================================================
    UTILITIES
    @utility (not a bare .class) so these compose with variants: md:bg-grain etc.
