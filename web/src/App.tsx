@@ -96,29 +96,52 @@ export default function App() {
     const FPS = 24;
     let desiredFrame = 0;
     let hasDesired = false;
-    // Last frame we actually seeked to, and last observed scroll position, so
-    // the clip can only rewind when the user is genuinely scrolling up.
+    // Last frame we actually seeked to, last observed scroll position, and a
+    // short window after a resize during which backward steps are refused.
     let appliedFrame = 0;
     let lastScrollY = window.scrollY;
+    let lockUntil = 0;
+
+    // Mobile scrub range, captured from layout — NOT from the live viewport
+    // height. A mobile URL bar hides mid-scroll, which changes innerHeight and
+    // getBoundingClientRect(); feeding those into the mapping made the clip
+    // rewind. `mobileRange` is re-measured only when the width changes (a real
+    // layout change), never for a toolbar show/hide.
+    let mobileRange = Math.max(section.offsetHeight, 1);
+    let measuredWidth = window.innerWidth;
 
     const computeDesiredFrame = () => {
-      const rect = section.getBoundingClientRect();
-      // Desktop pins the hero inside a taller wrapper, so the scroll runway is
-      // the wrapper height minus one viewport. Mobile fits to the section alone.
-      const progress = desktopQuery.matches
-        ? Math.min(1, Math.max(0, -rect.top / Math.max(rect.height - window.innerHeight, 1)))
-        : Math.min(1, Math.max(0, -rect.top / rect.height));
+      let progress: number;
+      if (desktopQuery.matches) {
+        // Desktop pins the hero inside a taller wrapper, so the scroll runway
+        // is the wrapper height minus one viewport. Its toolbar never moves.
+        const rect = section.getBoundingClientRect();
+        progress = Math.min(
+          1,
+          Math.max(0, -rect.top / Math.max(rect.height - window.innerHeight, 1)),
+        );
+      } else {
+        // Mobile: document scroll over a fixed range, so the toolbar
+        // transition cannot alter the mapping.
+        progress = Math.min(
+          1,
+          Math.max(0, (window.scrollY - section.offsetTop) / mobileRange),
+        );
+      }
       // Finish the ride at ~85% of the scroll, then rest on the final frame.
       const videoProgress = Math.min(1, progress / 0.85);
       const totalFrames = Math.max(1, Math.round(duration * FPS) - 1);
       let frame = Math.round(videoProgress * totalFrames);
 
-      // Direction with ~2px hysteresis. While not scrolling up, clamp so a
-      // toolbar resize / momentum blip can't drag the clip backward.
+      // Direction with ~2px hysteresis. While not scrolling up — or during the
+      // brief window after a resize (URL bar hide/show) — clamp so the clip
+      // cannot be dragged backward.
       const y = window.scrollY;
       const scrollingUp = y < lastScrollY - 2;
       lastScrollY = y;
-      if (!scrollingUp) frame = Math.max(frame, appliedFrame);
+      if (!scrollingUp || performance.now() < lockUntil) {
+        frame = Math.max(frame, appliedFrame);
+      }
 
       desiredFrame = frame;
       hasDesired = true;
@@ -147,6 +170,18 @@ export default function App() {
       }
     };
 
+    // A resize is either a real layout change (width) or the mobile URL bar
+    // hiding/showing (height only). Re-measure only on width changes and lock
+    // out backward steps briefly, so the toolbar transition can't rewind.
+    const handleResize = () => {
+      lockUntil = performance.now() + 400;
+      if (window.innerWidth !== measuredWidth) {
+        measuredWidth = window.innerWidth;
+        mobileRange = Math.max(section.offsetHeight, 1);
+      }
+      handleScroll();
+    };
+
     const handleLoadedMetadata = () => {
       duration = video.duration || 0;
       // Nudge Safari into decoding the first frame instead of leaving it black.
@@ -159,14 +194,16 @@ export default function App() {
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('seeked', applyFrame);
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+    window.addEventListener('orientationchange', handleResize);
     handleScroll();
 
     return () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('seeked', applyFrame);
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
