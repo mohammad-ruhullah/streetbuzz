@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Menu, ArrowUpRight, ArrowUp, Mail } from 'lucide-react';
 
 import { content } from '@/content';
@@ -12,8 +12,9 @@ import type { ProjectItem } from '@/content';
 // Hero and AdCycle photography is still bundled locally. Campaign shots for the
 // portfolio and services are supplied by the client via Sanity — see
 // src/content/ and scripts/sync-content.mjs.
-import heroAdcycleImg from './assets/images/adcycle_hero_1789635455161.jpg';
+import heroVideoPoster from './assets/images/hero_video_poster.jpg';
 import matteBlackAdcycleImg from './assets/images/adcycle_matte_black_1789635469186.jpg';
+import heroVideo from './assets/images/hero_video.mp4';
 
 interface ProcessStep {
   number: string;
@@ -48,6 +49,12 @@ export default function App() {
     message: ''
   });
 
+  // Scroll-scrubbed hero video. The clip never autoplays: as the hero section
+  // scrolls past, its scroll progress drives `currentTime`, so the AdCycle
+  // appears to ride with the scroll and rewinds on the way back up.
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+
   // Track scroll position to transition navigation to black with white text
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +66,57 @@ export default function App() {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Bind the hero video's playhead to the hero section's scroll progress.
+  useEffect(() => {
+    const section = heroSectionRef.current;
+    const video = heroVideoRef.current;
+    if (!section || !video) return;
+
+    // Respect reduced-motion: leave the poster frame fixed.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let duration = Number.isFinite(video.duration) ? video.duration : 0;
+    let rafId = 0;
+
+    const handleLoadedMetadata = () => {
+      duration = video.duration || 0;
+      // Nudge Safari into decoding the first frame instead of leaving it black.
+      if (video.currentTime === 0) video.currentTime = 0.001;
+      // Sync immediately in case the page loaded already scrolled.
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateFrame);
+    };
+
+    const updateFrame = () => {
+      rafId = 0;
+      if (!duration) return;
+      const rect = section.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, -rect.top / rect.height));
+      const target = progress * duration;
+      // Ignore sub-frame jitter to avoid pointless decode churn.
+      if (Math.abs(video.currentTime - target) > 1 / 60) {
+        video.currentTime = target;
+      }
+    };
+
+    const handleScroll = () => {
+      if (!rafId) rafId = requestAnimationFrame(updateFrame);
+    };
+
+    if (video.readyState >= 1) handleLoadedMetadata();
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    updateFrame();
+
+    return () => {
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // `services`, `projects`, `adCycleZones` and `siteSettings` now come from the
@@ -345,7 +403,7 @@ export default function App() {
           One strong, realistic photograph beside or underneath.
           Handwritten-style note: CREATIVE ADVERTISING THAT MOVES.
       -------------------------------------------------- */}
-      <section id="hero-section" className="pt-hero-top pb-hero-bottom px-gutter">
+      <section id="hero-section" ref={heroSectionRef} className="pt-hero-top pb-hero-bottom px-gutter">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
           
           {/* Hero Typography Column */}
@@ -397,11 +455,15 @@ export default function App() {
             <div className="relative group">
               {/* Clean realistic photograph showing StreetBuzz advertising bicycle moving through urban street */}
               <div className="overflow-hidden bg-neutral-200 border border-black/15 shadow-sm">
-                <img
-                  src={heroAdcycleImg}
-                  alt="StreetBuzz AdCycle mobile advertising bicycle moving through an urban city street"
-                  className="w-full aspect-[4/3] object-cover object-center grayscale-[20%] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-700 ease-out"
-                  loading="eager"
+                <video
+                  ref={heroVideoRef}
+                  src={heroVideo}
+                  poster={heroVideoPoster}
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-label="StreetBuzz AdCycle mobile advertising bicycle moving through an urban city street"
+                  className="w-full aspect-video object-cover object-center"
                 />
               </div>
 
