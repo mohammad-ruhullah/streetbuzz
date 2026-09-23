@@ -15,6 +15,7 @@ import type { ProjectItem } from '@/content';
 import heroVideoPoster from './assets/images/hero_video_poster.jpg';
 import matteBlackAdcycleImg from './assets/images/adcycle_matte_black_1789635469186.jpg';
 import heroVideo from './assets/images/hero_video.mp4';
+import logoStreetbuzz from './assets/images/logo_streetbuzz.png';
 
 interface ProcessStep {
   number: string;
@@ -314,10 +315,15 @@ export default function App() {
           <a 
             href="#" 
             id="nav-logo" 
-            className="flex items-center gap-1.5 group font-extrabold text-xl sm:text-2xl tracking-tight"
+            className={`inline-flex items-center -mx-2 px-2 py-1 group transition-colors ${
+              isScrolled ? 'bg-canvas' : ''
+            }`}
           >
-            <span className="transition-colors group-hover:opacity-80">STREETBUZZ</span>
-            <span className="w-2 h-2 rounded-full bg-lime inline-block mb-1 group-hover:scale-125 transition-transform" />
+            <img
+              src={logoStreetbuzz}
+              alt="StreetBuzz"
+              className="h-7 sm:h-8 w-auto group-hover:opacity-80 transition-opacity"
+            />
           </a>
 
           {/* CENTER: WORK, SERVICES, ABOUT (Desktop) */}
