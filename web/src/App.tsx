@@ -599,7 +599,7 @@ export default function App() {
                 >
                   <div className="flex items-baseline justify-between gap-4">
                     <div className="flex items-baseline gap-4 sm:gap-8">
-                      <span className="text-xs sm:text-sm font-mono font-bold tracking-widest text-black/40 group-hover:text-black">
+                      <span className="inline-block text-xs sm:text-sm font-mono font-bold tracking-widest bg-lime text-ink px-1.5 py-0.5 transition-colors group-hover:bg-ink group-hover:text-lime">
                         {item.number}
                       </span>
                       <h3 className={`text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight transition-colors ${
@@ -610,8 +610,8 @@ export default function App() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className={`text-xs font-bold uppercase tracking-wider transition-opacity ${
-                        isSelected ? 'opacity-100 text-ink' : 'opacity-0 group-hover:opacity-100 text-black/50'
+                      <span className={`text-xs font-bold uppercase tracking-wider px-1.5 py-0.5 bg-ink text-lime transition-opacity ${
+                        isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                       }`}>
                         EXPLORE
                       </span>
