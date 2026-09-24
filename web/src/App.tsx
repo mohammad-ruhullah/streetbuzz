@@ -493,7 +493,7 @@ export default function App() {
       <section
         id="hero-section"
         ref={heroSectionRef}
-        className="relative lg:h-[200vh] motion-reduce:lg:h-auto"
+        className="relative lg:h-[240vh] motion-reduce:lg:h-auto"
       >
         <div className="lg:sticky lg:top-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center px-gutter pt-hero-top pb-hero-bottom motion-reduce:lg:static motion-reduce:lg:min-h-0">
           <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
