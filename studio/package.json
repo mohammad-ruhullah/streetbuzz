@@ -8,7 +8,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "typecheck": "tsc --noEmit",
-    "seed": "node scripts/seed.mjs"
+    "seed": "node scripts/seed.mjs",
+    "seed:brands": "node scripts/seed-brands.mjs"
   },
   "dependencies": {
     "@sanity/vision": "^6.15.0",
