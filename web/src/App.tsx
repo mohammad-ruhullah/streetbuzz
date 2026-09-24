@@ -16,6 +16,7 @@ import heroVideoPoster from './assets/images/hero_video_poster.jpg';
 import matteBlackAdcycleImg from './assets/images/adcycle_matte_black_1789635469186.jpg';
 import heroVideo from './assets/images/hero_video.mp4';
 import logoStreetbuzz from './assets/images/logo_streetbuzz.png';
+import logoWhite from './assets/images/logo_white.png';
 
 interface ProcessStep {
   number: string;
@@ -1331,12 +1332,11 @@ export default function App() {
 
             {/* Brand */}
             <div className="md:col-span-5">
-              <div className="flex items-center gap-1.5 mb-4">
-                <span className="font-black tracking-tighter text-3xl uppercase text-chalk">
-                  STREETBUZZ
-                </span>
-                <span className="w-2.5 h-2.5 bg-lime" aria-hidden="true" />
-              </div>
+              <img
+                src={logoWhite}
+                alt="StreetBuzz"
+                className="h-9 sm:h-10 w-auto mb-4"
+              />
               <p className="text-sm font-semibold uppercase tracking-meta text-lime mb-4">
                 Creative Outdoor Marketing
               </p>
