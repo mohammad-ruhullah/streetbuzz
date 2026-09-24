@@ -777,10 +777,33 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Inline description visible on mobile or when selected */}
-                  <div className={`mt-3 sm:hidden text-sm text-body font-normal pl-8`}>
-                    <p>{item.description}</p>
-                    <p className="text-xs font-mono text-black/60 mt-1 uppercase">{item.formatDetail}</p>
+                  {/* Detail below lg: image + copy, expanded for the selected
+                      item (desktop uses the sticky preview box instead). */}
+                  <div className="mt-3 lg:hidden pl-8 text-sm text-body font-normal">
+                    {isSelected && (
+                      <>
+                        <div className="overflow-hidden aspect-[4/3] bg-neutral-100 mb-3 border border-black/10">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <p>{item.description}</p>
+                        <p className="text-xs font-mono text-black/60 mt-1 uppercase">{item.formatDetail}</p>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenTalk(item.title);
+                          }}
+                          className="mt-3 w-full py-2.5 bg-ink text-chalk text-xs font-bold uppercase tracking-meta hover:bg-lime hover:text-ink transition-colors"
+                        >
+                          INQUIRE FORMAT →
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               );
