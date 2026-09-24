@@ -160,15 +160,6 @@ export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jo
                 We are not actively hiring at the moment, but we are always glad to meet good people.
                 Send us your work and we will keep you in mind when something opens up.
               </p>
-              <a
-                href={`mailto:${contactEmail}?subject=${encodeURIComponent('Open application — StreetBuzz')}`}
-                className="group mt-8 inline-flex items-center gap-3 bg-ink text-chalk text-xs sm:text-sm font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime hover:text-ink transition-colors"
-              >
-                <span>SEND US YOUR WORK</span>
-                <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">
-                  →
-                </span>
-              </a>
             </div>
           )}
 
