@@ -169,9 +169,6 @@ export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jo
                   →
                 </span>
               </a>
-              <p className="mt-5 text-xs font-mono uppercase tracking-meta text-mute">
-                Or write to <span className="text-ink">{contactEmail}</span>
-              </p>
             </div>
           )}
 
