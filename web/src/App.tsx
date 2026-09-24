@@ -128,8 +128,9 @@ export default function App() {
           Math.max(0, (window.scrollY - section.offsetTop) / mobileRange),
         );
       }
-      // Finish the ride at ~85% of the scroll, then rest on the final frame.
-      const videoProgress = Math.min(1, progress / 0.85);
+      // Finish the ride at ~95% of the scroll, then rest on the final frame.
+      // Raising this value stretches the clip over more scrolling (slower).
+      const videoProgress = Math.min(1, progress / 0.95);
       const totalFrames = Math.max(1, Math.round(duration * FPS) - 1);
       let frame = Math.round(videoProgress * totalFrames);
 
