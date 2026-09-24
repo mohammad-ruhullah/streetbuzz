@@ -84,6 +84,10 @@ const BRANDS_QUERY = `*[_type == "brand" && active != false] | order(coalesce(or
   _id, name, logo, url
 }`
 
+const JOBS_QUERY = `*[_type == "job" && active != false] | order(coalesce(order, 9999) asc, title asc) {
+  _id, title, team, location, type, description, applyEmail
+}`
+
 const DEFAULT_SITE_SETTINGS = {
   contactEmail: 'hello@wearestreetbuzz.com',
   founderEmail: 'ceo@wearestreetbuzz.com',
@@ -93,12 +97,13 @@ const DEFAULT_SITE_SETTINGS = {
 }
 
 async function main() {
-  const [settings, services, projects, zones, brands] = await Promise.all([
+  const [settings, services, projects, zones, brands, jobs] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(SERVICES_QUERY),
     client.fetch(PROJECTS_QUERY),
     client.fetch(ZONES_QUERY),
     client.fetch(BRANDS_QUERY),
+    client.fetch(JOBS_QUERY),
   ])
 
   const emptyCollections = [
@@ -155,6 +160,15 @@ async function main() {
       logo: imageUrl(doc.logo, 400),
       url: doc.url ?? '',
     })),
+    jobs: jobs.map((doc) => ({
+      id: doc._id,
+      title: doc.title ?? '',
+      team: doc.team ?? '',
+      location: doc.location ?? '',
+      type: doc.type ?? '',
+      description: doc.description ?? '',
+      applyEmail: doc.applyEmail ?? '',
+    })),
   }
 
   await mkdir(path.dirname(outputPath), { recursive: true })
@@ -163,7 +177,8 @@ async function main() {
   console.log(
     `[sync-content] Wrote ${path.relative(webRoot, outputPath)} — ` +
       `${content.services.length} services, ${content.projects.length} projects, ` +
-      `${content.adCycleZones.length} zones, ${content.brands.length} brands.`,
+      `${content.adCycleZones.length} zones, ${content.brands.length} brands, ` +
+      `${content.jobs.length} jobs.`,
   )
 }
 

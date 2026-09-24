@@ -13,4 +13,5 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('project').title('Portfolio'),
       S.documentTypeListItem('adCycleZone').title('AdCycle Zones'),
       S.documentTypeListItem('brand').title('Brand Collaborations'),
+      S.documentTypeListItem('job').title('Careers — Open Roles'),
     ])

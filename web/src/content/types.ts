@@ -32,6 +32,16 @@ export interface BrandItem {
   url?: string
 }
 
+export interface JobItem {
+  id: string
+  title: string
+  team: string
+  location: string
+  type: string
+  description: string
+  applyEmail: string
+}
+
 export interface SocialLink {
   label: string
   url: string
@@ -51,4 +61,5 @@ export interface Content {
   projects: ProjectItem[]
   adCycleZones: AdCycleZone[]
   brands: BrandItem[]
+  jobs: JobItem[]
 }

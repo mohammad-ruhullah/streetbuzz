@@ -8,6 +8,7 @@ import { X, Menu, ArrowUpRight, ArrowUp, Mail } from 'lucide-react';
 
 import { content } from '@/content';
 import type { ProjectItem } from '@/content';
+import CareersPage from './pages/CareersPage';
 
 // Hero and AdCycle photography is still bundled locally. Campaign shots for the
 // portfolio and services are supplied by the client via Sanity — see
@@ -29,7 +30,17 @@ interface ProcessStep {
 }
 
 export default function App() {
-  const { services, projects, adCycleZones, siteSettings, brands } = content;
+  const { services, projects, adCycleZones, siteSettings, brands, jobs } = content;
+
+  // Two-page app: the landing page and /careers share this shell (nav, footer,
+  // modals). /careers is served by a Vercel rewrite to index.html.
+  const isCareers = /^\/careers\/?$/.test(window.location.pathname);
+
+  useEffect(() => {
+    document.title = isCareers
+      ? 'Careers | STREETBUZZ'
+      : 'STREETBUZZ | Outdoor Advertising Agency in Bangladesh';
+  }, [isCareers]);
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -364,7 +375,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* LEFT: StreetBuzz logo */}
           <a 
-            href="#" 
+            href="/" 
             id="nav-logo" 
             className="inline-flex items-center group"
           >
@@ -378,32 +389,39 @@ export default function App() {
           {/* CENTER: WORK, SERVICES, ABOUT (Desktop) */}
           <div className="hidden md:flex items-center gap-10 text-xs font-semibold uppercase tracking-nav">
             <a 
-              href="#work" 
+              href="/#work" 
               id="nav-link-work"
               className="hover:text-lime transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-lime hover:after:w-full after:transition-all"
             >
               Work
             </a>
             <a 
-              href="#services" 
+              href="/#services" 
               id="nav-link-services"
               className="hover:text-lime transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-lime hover:after:w-full after:transition-all"
             >
               Services
             </a>
             <a 
-              href="#adcycle" 
+              href="/#adcycle" 
               id="nav-link-adcycle"
               className="hover:text-lime transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-lime hover:after:w-full after:transition-all"
             >
               AdCycle
             </a>
             <a 
-              href="#about" 
+              href="/#about" 
               id="nav-link-about"
               className="hover:text-lime transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-lime hover:after:w-full after:transition-all"
             >
               About
+            </a>
+            <a 
+              href="/careers" 
+              id="nav-link-careers"
+              className="hover:text-lime transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-lime hover:after:w-full after:transition-all"
+            >
+              Careers
             </a>
           </div>
 
@@ -435,32 +453,39 @@ export default function App() {
           <div className="md:hidden pt-4 pb-6 border-t bg-canvas text-ink border-black/10">
             <div className="flex flex-col gap-4 text-sm font-bold uppercase tracking-nav">
               <a 
-                href="#work" 
+                href="/#work" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 border-b border-black/5 hover:text-lime"
               >
                 Work
               </a>
               <a 
-                href="#services" 
+                href="/#services" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 border-b border-black/5 hover:text-lime"
               >
                 Services
               </a>
               <a 
-                href="#adcycle" 
+                href="/#adcycle" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 border-b border-black/5 hover:text-lime"
               >
                 AdCycle
               </a>
               <a 
-                href="#about" 
+                href="/#about" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 border-b border-black/5 hover:text-lime"
               >
                 About
+              </a>
+              <a 
+                href="/careers" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 border-b border-black/5 hover:text-lime"
+              >
+                Careers
               </a>
               <button
                 onClick={() => {
@@ -476,6 +501,15 @@ export default function App() {
         )}
       </nav>
 
+      {isCareers ? (
+        <CareersPage
+          onOpenTalk={() => handleOpenTalk()}
+          contactEmail={siteSettings.contactEmail}
+          founderEmail={siteSettings.founderEmail}
+          jobs={jobs}
+        />
+      ) : (
+        <>
       {/* --------------------------------------------------
           HERO
           Keep the hero extremely simple.
@@ -1435,6 +1469,9 @@ export default function App() {
         </div>
       </section>
 
+        </>
+      )}
+
       {/* --------------------------------------------------
           FOOTER
           Ported from design 2 (Client Preference/2/src/components/Footer.tsx).
@@ -1470,12 +1507,13 @@ export default function App() {
               </p>
               <ul className="space-y-2.5 text-sm font-semibold tracking-wide">
                 {[
-                  { label: 'Work', href: '#work' },
-                  { label: 'Services', href: '#services' },
-                  { label: 'Process', href: '#process' },
-                  { label: 'AdCycle', href: '#adcycle' },
-                  { label: 'About', href: '#about' },
-                  { label: 'Contact', href: '#contact' },
+                  { label: 'Work', href: '/#work' },
+                  { label: 'Services', href: '/#services' },
+                  { label: 'Process', href: '/#process' },
+                  { label: 'AdCycle', href: '/#adcycle' },
+                  { label: 'About', href: '/#about' },
+                  { label: 'Careers', href: '/careers' },
+                  { label: 'Contact', href: '/#contact' },
                 ].map((link) => (
                   <li key={link.href}>
                     <a href={link.href} className="text-chalk-2 hover:text-lime transition-colors">

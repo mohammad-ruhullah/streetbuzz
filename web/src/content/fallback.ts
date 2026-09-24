@@ -200,4 +200,7 @@ export const fallbackContent: Content = {
     { id: 'shyamoli', name: 'Shyamoli', logo: '/brands/shyamoli.png' },
     { id: 'east-delta-university', name: 'East Delta University', logo: '/brands/eastdelta.png' },
   ],
+  // Careers roles come from Sanity only. Left empty here so the careers page
+  // shows its "no open roles" state until the client adds jobs in the Studio.
+  jobs: [],
 }
