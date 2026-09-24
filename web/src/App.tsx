@@ -13,7 +13,7 @@ import type { ProjectItem } from '@/content';
 // portfolio and services are supplied by the client via Sanity — see
 // src/content/ and scripts/sync-content.mjs.
 import heroVideoPoster from './assets/images/hero_video_poster.jpg';
-import matteBlackAdcycleImg from './assets/images/adcycle_matte_black_1789635469186.jpg';
+import formatImg from './assets/images/format.jpg';
 import heroVideo from './assets/images/hero_video.mp4';
 import logoStreetbuzz from './assets/images/logo_streetbuzz.png';
 import logoWhite from './assets/images/logo_white.png';
@@ -928,13 +928,13 @@ export default function App() {
               </div>
             </div>
 
-            {/* Right Photograph Column: Clean realistic photograph of matte-black StreetBuzz advertising bicycle */}
+            {/* Right Photograph Column: StreetBuzz AdCycle with branded poster trailer */}
             <div className="lg:col-span-6">
               <div className="relative">
                 <div className="overflow-hidden border border-edge bg-neutral-900 shadow-2xl">
                   <img
-                    src={matteBlackAdcycleImg}
-                    alt="Matte-black StreetBuzz AdCycle mobile advertising bicycle parked in an urban street setting"
+                    src={formatImg}
+                    alt="StreetBuzz AdCycle mobile advertising bicycle towing a branded poster trailer"
                     className="w-full aspect-[4/3] object-cover object-center grayscale-[10%] hover:grayscale-0 transition-all duration-700 hover:scale-[1.02]"
                   />
                 </div>
