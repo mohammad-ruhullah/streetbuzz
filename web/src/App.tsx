@@ -29,7 +29,7 @@ interface ProcessStep {
 }
 
 export default function App() {
-  const { services, projects, adCycleZones, siteSettings } = content;
+  const { services, projects, adCycleZones, siteSettings, brands } = content;
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -1129,6 +1129,101 @@ export default function App() {
         </div>
         </div>
       </section>
+
+      {/* --------------------------------------------------
+          BRAND COLLABORATIONS
+          "THE BRANDS THAT TRUST US / GO OUTSIDE." social-proof wall.
+          Logos are `brand` documents from Sanity via the content layer; the
+          committed fallback holds demo partner logos. Hidden entirely when the
+          list is empty so the band never renders blank.
+      -------------------------------------------------- */}
+      {brands.length > 0 && (
+        <section
+          id="brands"
+          className="relative overflow-hidden bg-paper border-b border-black/10 py-24 sm:py-32 px-gutter"
+        >
+          <div className="max-w-7xl mx-auto">
+            {/* Eyebrow row */}
+            <div className="flex items-center justify-between gap-4 text-[11px] font-mono font-bold uppercase tracking-meta text-mute mb-12 sm:mb-16">
+              <span className="flex items-center gap-3">
+                <span className="w-8 h-px bg-mute/60" aria-hidden="true" />
+                WORK WITH BRANDS
+              </span>
+              <span className="hidden sm:inline">MAKE NOISE OUTSIDE.</span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+              {/* Headline */}
+              <div className="lg:col-span-7">
+                <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
+                  THE BRANDS<br />
+                  THAT TRUST US<br />
+                  <span className="block font-hand text-lime normal-case tracking-normal leading-none text-5xl sm:text-6xl lg:text-7xl mt-3 -rotate-2">
+                    GO OUTSIDE.
+                  </span>
+                </h2>
+                <p className="mt-8 text-lg sm:text-xl text-body leading-relaxed max-w-md">
+                  We work with brands that want more than just visibility. We turn their ideas into real-world impact.
+                </p>
+              </div>
+
+              {/* Footnote */}
+              <div className="lg:col-span-5 lg:pt-28">
+                <p className="text-xs font-mono uppercase tracking-meta text-mute leading-relaxed border-l-2 border-lime pl-4 max-w-xs">
+                  From street corners to city screens. We bring brands closer to people.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Tilted logo marquee */}
+          <div className="relative mt-16 sm:mt-20 overflow-hidden">
+            <div className="-rotate-3 w-[120%] -ml-[10%]">
+              <div className="flex w-max animate-marquee motion-reduce:animate-none hover:[animation-play-state:paused]">
+                {[...brands, ...brands].map((brand, index) => {
+                  const mark = (
+                    <img
+                      src={brand.logo}
+                      alt={brand.name}
+                      loading="lazy"
+                      className="h-full w-auto max-w-[160px] object-contain grayscale opacity-70 transition hover:opacity-100 hover:grayscale-0"
+                    />
+                  )
+                  return (
+                    <div
+                      key={`${brand.id}-${index}`}
+                      className="shrink-0 flex items-center justify-center h-9 sm:h-11 px-8 sm:px-12"
+                    >
+                      {brand.url ? (
+                        <a href={brand.url} target="_blank" rel="noreferrer">
+                          {mark}
+                        </a>
+                      ) : (
+                        mark
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="max-w-7xl mx-auto mt-14 sm:mt-16">
+            <button
+              type="button"
+              onClick={() => handleOpenTalk()}
+              className="group inline-flex items-center gap-3 text-xs sm:text-sm font-bold uppercase tracking-btn text-ink"
+            >
+              <span>LET'S WORK TOGETHER</span>
+              <span className="inline-block w-8 h-px bg-ink" aria-hidden="true" />
+              <span className="text-lime text-lg group-hover:translate-x-1 transition-transform" aria-hidden="true">
+                →
+              </span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* --------------------------------------------------
           ABOUT

@@ -183,4 +183,21 @@ export const fallbackContent: Content = {
       ],
     },
   ],
+  // Demo partner logos (Bangladeshi brands), served from web/public/brands so
+  // they never enter the JS bundle. Placeholders only — the client replaces
+  // these in Sanity -> Brand Collaborations.
+  brands: [
+    { id: 'grameenphone', name: 'Grameenphone', logo: '/brands/grameenphone.png' },
+    { id: 'robi', name: 'Robi', logo: '/brands/robi.png' },
+    { id: 'banglalink', name: 'Banglalink', logo: '/brands/banglalink.png' },
+    { id: 'bkash', name: 'bKash', logo: '/brands/bkash.png' },
+    { id: 'nagad', name: 'Nagad', logo: '/brands/nagad.png' },
+    { id: 'walton', name: 'Walton', logo: '/brands/walton.png' },
+    { id: 'pran', name: 'PRAN', logo: '/brands/pran.png' },
+    { id: 'square', name: 'Square', logo: '/brands/square.png' },
+    { id: 'akij', name: 'Akij', logo: '/brands/akij.png' },
+    { id: 'fresh', name: 'Fresh', logo: '/brands/fresh.png' },
+    { id: 'shyamoli', name: 'Shyamoli', logo: '/brands/shyamoli.png' },
+    { id: 'east-delta-university', name: 'East Delta University', logo: '/brands/eastdelta.png' },
+  ],
 }

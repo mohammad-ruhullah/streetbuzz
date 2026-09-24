@@ -50,10 +50,10 @@ const client = createClient({
 
 const imageBuilder = createImageUrlBuilder(client)
 
-function imageUrl(image) {
+function imageUrl(image, width = 1600) {
   if (!image || !image.asset) return ''
   try {
-    return imageBuilder.image(image).width(1600).auto('format').quality(80).url()
+    return imageBuilder.image(image).width(width).auto('format').quality(80).url()
   } catch (error) {
     console.warn(`[sync-content] Could not build image URL: ${error.message}`)
     return ''
@@ -80,6 +80,10 @@ const ZONES_QUERY = `*[_type == "adCycleZone"] | order(coalesce(order, 9999) asc
   city, note, areas
 }`
 
+const BRANDS_QUERY = `*[_type == "brand" && active != false] | order(coalesce(order, 9999) asc, name asc) {
+  _id, name, logo, url
+}`
+
 const DEFAULT_SITE_SETTINGS = {
   contactEmail: 'hello@wearestreetbuzz.com',
   founderEmail: 'ceo@wearestreetbuzz.com',
@@ -89,17 +93,19 @@ const DEFAULT_SITE_SETTINGS = {
 }
 
 async function main() {
-  const [settings, services, projects, zones] = await Promise.all([
+  const [settings, services, projects, zones, brands] = await Promise.all([
     client.fetch(SITE_SETTINGS_QUERY),
     client.fetch(SERVICES_QUERY),
     client.fetch(PROJECTS_QUERY),
     client.fetch(ZONES_QUERY),
+    client.fetch(BRANDS_QUERY),
   ])
 
   const emptyCollections = [
     ['services', services],
     ['projects', projects],
     ['adCycleZones', zones],
+    ['brands', brands],
   ].filter(([, docs]) => !Array.isArray(docs) || docs.length === 0)
 
   if (emptyCollections.length > 0) {
@@ -143,6 +149,12 @@ async function main() {
       note: doc.note ?? '',
       areas: doc.areas ?? [],
     })),
+    brands: brands.map((doc) => ({
+      id: doc._id,
+      name: doc.name ?? '',
+      logo: imageUrl(doc.logo, 400),
+      url: doc.url ?? '',
+    })),
   }
 
   await mkdir(path.dirname(outputPath), { recursive: true })
@@ -151,7 +163,7 @@ async function main() {
   console.log(
     `[sync-content] Wrote ${path.relative(webRoot, outputPath)} — ` +
       `${content.services.length} services, ${content.projects.length} projects, ` +
-      `${content.adCycleZones.length} zones.`,
+      `${content.adCycleZones.length} zones, ${content.brands.length} brands.`,
   )
 }
 

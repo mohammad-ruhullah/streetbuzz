@@ -25,6 +25,13 @@ export interface AdCycleZone {
   areas: string[]
 }
 
+export interface BrandItem {
+  id: string
+  name: string
+  logo: string
+  url?: string
+}
+
 export interface SocialLink {
   label: string
   url: string
@@ -43,4 +50,5 @@ export interface Content {
   services: ServiceItem[]
   projects: ProjectItem[]
   adCycleZones: AdCycleZone[]
+  brands: BrandItem[]
 }
