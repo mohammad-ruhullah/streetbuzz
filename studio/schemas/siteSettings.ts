@@ -20,6 +20,13 @@ export const siteSettings = defineType({
       validation: (rule) => rule.email(),
     }),
     defineField({
+      name: 'careersEmail',
+      title: 'Careers Email',
+      type: 'string',
+      description: 'Inbox behind both careers page CTAs, and the default for roles with no Apply Email.',
+      validation: (rule) => rule.email(),
+    }),
+    defineField({
       name: 'socials',
       title: 'Social Links',
       type: 'array',

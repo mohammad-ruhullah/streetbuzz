@@ -63,6 +63,7 @@ function imageUrl(image, width = 1600) {
 const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   contactEmail,
   founderEmail,
+  careersEmail,
   socials[]{ label, url },
   formFormatOptions,
   formCityOptions
@@ -91,6 +92,7 @@ const JOBS_QUERY = `*[_type == "job" && active != false] | order(coalesce(order,
 const DEFAULT_SITE_SETTINGS = {
   contactEmail: 'hello@wearestreetbuzz.com',
   founderEmail: 'ceo@wearestreetbuzz.com',
+  careersEmail: 'careers@wearestreetbuzz.com',
   socials: [],
   formFormatOptions: [],
   formCityOptions: [],

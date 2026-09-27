@@ -50,6 +50,7 @@ export interface SocialLink {
 export interface SiteSettings {
   contactEmail: string
   founderEmail: string
+  careersEmail: string
   socials: SocialLink[]
   formFormatOptions: string[]
   formCityOptions: string[]

@@ -28,6 +28,8 @@ export const content: Content = generatedContent
           generatedContent.siteSettings?.contactEmail || fallbackContent.siteSettings.contactEmail,
         founderEmail:
           generatedContent.siteSettings?.founderEmail || fallbackContent.siteSettings.founderEmail,
+        careersEmail:
+          generatedContent.siteSettings?.careersEmail || fallbackContent.siteSettings.careersEmail,
         socials: selectList<SocialLink>(
           generatedContent.siteSettings?.socials,
           fallbackContent.siteSettings.socials,

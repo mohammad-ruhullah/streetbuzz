@@ -21,6 +21,7 @@ export const fallbackContent: Content = {
   siteSettings: {
     contactEmail: 'hello@wearestreetbuzz.com',
     founderEmail: 'ceo@wearestreetbuzz.com',
+    careersEmail: 'careers@wearestreetbuzz.com',
     socials: [
       { label: 'Instagram', url: 'https://instagram.com/wearestreetbuzz' },
       { label: 'Facebook', url: 'https://facebook.com/wearestreetbuzz' },
