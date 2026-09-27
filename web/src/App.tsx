@@ -113,6 +113,19 @@ export default function App() {
     let appliedFrame = 0;
     let lastScrollY = window.scrollY;
     let lockUntil = 0;
+    // The mobile URL bar resizes the VISUAL viewport only — the layout viewport
+    // never moves, so window.resize is the wrong signal and may not fire at all.
+    // Sampling this height every frame makes the guard state-based rather than
+    // dependent on an event arriving before the scroll handler does.
+    const viewport = window.visualViewport;
+    let lastViewportHeight = viewport ? viewport.height : window.innerHeight;
+    // iOS will not decode a frame for a video that has never played: it clamps
+    // preload="auto" to metadata and builds no video layer, so a seek paints
+    // nothing. `primed` tracks whether a muted inline play() has succeeded; no
+    // seek is issued before it has, because seeking dismisses the poster and
+    // would leave an empty box behind.
+    let primed = false;
+    let disarmGestureRetry = () => {};
 
     // Mobile scrub range, captured from layout — NOT from the live viewport
     // height. A mobile URL bar hides mid-scroll, which changes innerHeight and
@@ -146,11 +159,21 @@ export default function App() {
       const totalFrames = Math.max(1, Math.round(duration * FPS) - 1);
       let frame = Math.round(videoProgress * totalFrames);
 
-      // Direction with ~2px hysteresis. While not scrolling up — or during the
-      // brief window after a resize (URL bar hide/show) — clamp so the clip
-      // cannot be dragged backward.
+      // Backward movement is allowed only for a deliberate scroll up. Safari
+      // shifts scrollY while the URL bar collapses, which read as scrolling up
+      // and let the clip rewind. The discriminator is the viewport height, NOT
+      // the size of the jump: a toolbar jolt is LARGER than a slow deliberate
+      // drag, so raising the px tolerance would pass the jolt through and block
+      // the drag. It stays at 2px; the height check does the real work.
       const y = window.scrollY;
-      const scrollingUp = y < lastScrollY - 2;
+      const viewportHeight = viewport ? viewport.height : window.innerHeight;
+      const viewportChanged = Math.abs(viewportHeight - lastViewportHeight) > 1;
+      lastViewportHeight = viewportHeight;
+      // Height settles before scroll does, so extend the refusal past the
+      // transition rather than trusting this single frame.
+      if (viewportChanged) lockUntil = performance.now() + 400;
+
+      const scrollingUp = !viewportChanged && y < lastScrollY - 2;
       lastScrollY = y;
       if (!scrollingUp || performance.now() < lockUntil) {
         frame = Math.max(frame, appliedFrame);
@@ -166,6 +189,10 @@ export default function App() {
     // (fastSeek is avoided — at GOP 2 it snaps to even frames and looks choppy.)
     const applyFrame = () => {
       if (!duration || !hasDesired || video.seeking) return;
+      // readyState < HAVE_CURRENT_DATA means there is no decoded frame to show.
+      // Seeking now would drop the poster for an empty element; hold instead,
+      // so an un-primeable browser degrades to a static poster.
+      if (!primed || video.readyState < 2) return;
       const currentFrame = Math.round(video.currentTime * FPS);
       if (desiredFrame !== currentFrame) {
         video.currentTime = desiredFrame / FPS;
@@ -183,6 +210,52 @@ export default function App() {
       }
     };
 
+    const markPrimed = () => {
+      video.pause();
+      primed = true;
+      disarmGestureRetry();
+      handleScroll();
+    };
+
+    // Low Power Mode refuses even muted inline autoplay, so a refusal waits for
+    // the visitor's first touch and tries once more.
+    const armGestureRetry = () => {
+      const retry = () => {
+        video.muted = true;
+        video.play().then(markPrimed).catch(() => {});
+      };
+      disarmGestureRetry = () => {
+        window.removeEventListener('touchstart', retry);
+        window.removeEventListener('pointerdown', retry);
+        disarmGestureRetry = () => {};
+      };
+      window.addEventListener('touchstart', retry, { passive: true });
+      window.addEventListener('pointerdown', retry, { passive: true });
+    };
+
+    // Build the video layer and start buffering with a muted inline play()
+    // immediately followed by pause(). muted + playsInline keeps this inside
+    // iOS's autoplay policy; without it iOS decodes nothing and the element
+    // paints an empty box once a seek dismisses the poster.
+    const prime = () => {
+      if (primed) return;
+      video.muted = true;
+      let started: Promise<void> | undefined;
+      try {
+        started = video.play();
+      } catch {
+        armGestureRetry();
+        return;
+      }
+      // Older browsers return nothing from play(); treat that as success.
+      if (!started) {
+        primed = true;
+        handleScroll();
+        return;
+      }
+      started.then(markPrimed).catch(armGestureRetry);
+    };
+
     // A resize is either a real layout change (width) or the mobile URL bar
     // hiding/showing (height only). Re-measure only on width changes and lock
     // out backward steps briefly, so the toolbar transition can't rewind.
@@ -197,26 +270,32 @@ export default function App() {
 
     const handleLoadedMetadata = () => {
       duration = video.duration || 0;
-      // Nudge Safari into decoding the first frame instead of leaving it black.
-      if (video.currentTime === 0) video.currentTime = 0.001;
+      // Priming replaces the old `currentTime = 0.001` nudge, which dismissed
+      // the poster before iOS had decoded anything to replace it with.
+      prime();
       // Sync immediately in case the page loaded already scrolled.
       handleScroll();
     };
 
     if (video.readyState >= 1) handleLoadedMetadata();
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('loadeddata', applyFrame);
     video.addEventListener('seeked', applyFrame);
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
     window.addEventListener('orientationchange', handleResize);
+    viewport?.addEventListener('resize', handleResize);
     handleScroll();
 
     return () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('loadeddata', applyFrame);
       video.removeEventListener('seeked', applyFrame);
+      disarmGestureRetry();
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
+      viewport?.removeEventListener('resize', handleResize);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
