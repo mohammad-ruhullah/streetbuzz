@@ -430,7 +430,7 @@ export default function App() {
             <button
               onClick={() => handleOpenTalk()}
               id="nav-cta-btn"
-              className="hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-meta px-5 py-2.5 transition-all bg-ink text-chalk hover:bg-black/85"
+              className="hidden sm:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-meta px-5 py-2.5 transition-all bg-lime text-ink hover:bg-lime-lo focus-visible:outline-ink"
             >
               <span>LET'S TALK</span>
               <span className="text-sm">→</span>
@@ -492,7 +492,7 @@ export default function App() {
                   setMobileMenuOpen(false);
                   handleOpenTalk();
                 }}
-                className="mt-2 w-full py-3 bg-lime text-ink font-bold text-center uppercase tracking-wider"
+                className="mt-2 w-full py-3 bg-lime text-ink font-bold text-center uppercase tracking-wider hover:bg-lime-lo transition-colors focus-visible:outline-ink"
               >
                 LET'S TALK →
               </button>
@@ -592,12 +592,6 @@ export default function App() {
                   aria-label="StreetBuzz AdCycle mobile advertising bicycle moving through an urban city street"
                   className="w-full aspect-video object-cover object-center"
                 />
-              </div>
-
-              {/* Minimal caption line */}
-              <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-black/60 mt-3 px-1">
-                <span>FORMAT // 01 ADC-URBAN</span>
-                <span>REAL-WORLD ATTENTION</span>
               </div>
 
               {/* Small handwritten-style note */}
@@ -721,7 +715,7 @@ export default function App() {
             {/* Staccato rhythm */}
             <div className="my-12 sm:my-16 md:my-20 flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 font-mono text-base sm:text-xl md:text-2xl text-chalk-2">
               <span className="text-chalk font-bold">It&rsquo;s where people</span>
-              {['walk.', 'Wait.', 'Meet.', 'Look.', 'Live.'].map((verb, idx, arr) => (
+              {['walk', 'wait', 'meet', 'look', 'live.'].map((verb, idx, arr) => (
                 <span key={verb} className="inline-flex items-center gap-3 sm:gap-4 cursor-default">
                   <span className="text-lime font-black" aria-hidden="true">/</span>
                   <span className="text-chalk hover:text-lime transition-colors font-medium">
