@@ -1206,81 +1206,44 @@ export default function App() {
           </div>
 
           {/* --------------------------------------------------
-              TILTED LOGO RIBBON
-              Full-bleed band that rises left-to-right across the section and
-              overlaps the headline's empty right column. Logos ride it at
-              full strength — no grayscale, no dimming — because the wall IS
-              the social proof. Legibility at the frame edges comes from a
-              mask on the outer (unrotated) rail, so the fade tracks the
-              screen edge rather than the tilted track.
+              LOGO MARQUEE
+              Deliberately LEVEL and undecorated. An earlier pass tilted this
+              track and dressed it with a ribbon plate to imply the reference
+              mockup's curve; a real curve (offset-path) is worse here because
+              offset-rotate tilts every mark to the path tangent, so logos
+              would rotate continuously as they travel, and the translateX
+              (-50%) seamless loop stops working. Flat keeps every logo
+              upright at its true orientation and the loop seam invisible.
+              Nothing sits behind the marks — the wall IS the social proof.
+              Edge legibility comes from the mask, which fades the track into
+              the page at both frame edges.
           -------------------------------------------------- */}
-          <div
-            className="relative mt-12 lg:-mt-16 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-          >
-            {/* Lime trajectory arrow, riding just above the ribbon's climb. */}
-            <svg
-              className="hidden lg:block absolute right-[22%] top-2 w-56 h-14 text-lime pointer-events-none"
-              viewBox="0 0 224 56"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M2 52C54 40 120 22 208 6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M188 12L210 5L204 26"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <div className="relative -rotate-[5deg] sm:-rotate-[7deg] lg:-rotate-[9deg] w-[135%] -ml-[17.5%] py-7 sm:py-9">
-              {/* Ribbon plate: a white lift off the paper band, feathered top
-                  and bottom so it reads as a ribbon rather than a boxed strip. */}
-              <div
-                className="absolute inset-0 bg-gradient-to-b from-canvas/0 via-canvas to-canvas/0 shadow-[0_34px_70px_-44px_rgb(0_0_0/0.55)]"
-                aria-hidden="true"
-              />
-              <div
-                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"
-                aria-hidden="true"
-              />
-              <div
-                className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"
-                aria-hidden="true"
-              />
-
-              <div className="relative flex w-max animate-marquee motion-reduce:animate-none hover:[animation-play-state:paused]">
-                {[...brands, ...brands].map((brand, index) => {
-                  const mark = (
-                    <img
-                      src={brand.logo}
-                      alt={brand.name}
-                      loading="lazy"
-                      className="h-full w-auto max-w-[200px] sm:max-w-[240px] object-contain transition-transform duration-300 hover:scale-105"
-                    />
-                  )
-                  return (
-                    <div
-                      key={`${brand.id}-${index}`}
-                      className="shrink-0 flex items-center justify-center h-14 sm:h-20 lg:h-24 px-8 sm:px-12 lg:px-16"
-                    >
-                      {brand.url ? (
-                        <a href={brand.url} target="_blank" rel="noreferrer" className="block h-full">
-                          {mark}
-                        </a>
-                      ) : (
-                        mark
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
+          <div className="relative mt-12 sm:mt-16 py-7 sm:py-9 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="flex w-max animate-marquee motion-reduce:animate-none hover:[animation-play-state:paused]">
+              {[...brands, ...brands].map((brand, index) => {
+                const mark = (
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    loading="lazy"
+                    className="h-full w-auto max-w-[200px] sm:max-w-[240px] object-contain transition-transform duration-300 hover:scale-105"
+                  />
+                )
+                return (
+                  <div
+                    key={`${brand.id}-${index}`}
+                    className="shrink-0 flex items-center justify-center h-14 sm:h-20 lg:h-24 px-8 sm:px-12 lg:px-16"
+                  >
+                    {brand.url ? (
+                      <a href={brand.url} target="_blank" rel="noreferrer" className="block h-full">
+                        {mark}
+                      </a>
+                    ) : (
+                      mark
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
 
