@@ -503,9 +503,7 @@ export default function App() {
 
       {isCareers ? (
         <CareersPage
-          onOpenTalk={() => handleOpenTalk()}
-          contactEmail={siteSettings.contactEmail}
-          founderEmail={siteSettings.founderEmail}
+          careersEmail={siteSettings.careersEmail}
           jobs={jobs}
         />
       ) : (
@@ -1622,9 +1620,6 @@ export default function App() {
             ) : (
               <div>
                 <div className="mb-6">
-                  <span className="text-[11px] font-mono uppercase tracking-widest text-black/50 block mb-1">
-                    START A CONVERSATION
-                  </span>
                   <h3 className="text-3xl font-extrabold uppercase tracking-tight">
                     LET'S TALK OUTDOOR.
                   </h3>

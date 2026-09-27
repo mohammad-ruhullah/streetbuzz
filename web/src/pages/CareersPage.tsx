@@ -9,9 +9,7 @@
 import type { JobItem } from '@/content'
 
 interface CareersPageProps {
-  contactEmail: string
-  founderEmail: string
-  onOpenTalk: () => void
+  careersEmail: string
   jobs: JobItem[]
 }
 
@@ -38,9 +36,12 @@ const PRINCIPLES = [
   },
 ]
 
-export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jobs }: CareersPageProps) {
+export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
   const applyHref = (email: string, roleTitle: string) =>
-    `mailto:${email || contactEmail}?subject=${encodeURIComponent(`Application — ${roleTitle}`)}`
+    `mailto:${email || careersEmail}?subject=${encodeURIComponent(`Application — ${roleTitle}`)}`
+
+  /* EMAIL US opens the visitor's mail client on the careers inbox. */
+  const careersHref = `mailto:${careersEmail}?subject=${encodeURIComponent('Careers — StreetBuzz')}`
 
   return (
     <main id="careers-page" className="bg-paper">
@@ -79,13 +80,6 @@ export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jo
                 →
               </span>
             </a>
-            <button
-              type="button"
-              onClick={onOpenTalk}
-              className="text-xs font-bold uppercase tracking-nav text-ink/70 hover:text-ink underline underline-offset-4 decoration-black/30 hover:decoration-black transition-all"
-            >
-              START A CONVERSATION
-            </button>
           </div>
         </div>
       </section>
@@ -204,9 +198,6 @@ export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jo
       <section className="py-24 sm:py-32 px-gutter">
         <div className="max-w-7xl mx-auto">
           <div className="bg-ink text-chalk p-8 sm:p-14">
-            <span className="text-xs font-mono font-bold uppercase tracking-label text-lime block mb-6">
-              // SEND US YOUR WORK
-            </span>
             <h2 className="text-cta font-black uppercase tracking-mega leading-mega">
               READY TO<br />
               MAKE SOME<br />
@@ -221,7 +212,7 @@ export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jo
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-6">
               <a
-                href={`mailto:${founderEmail}?subject=${encodeURIComponent('Careers — StreetBuzz')}`}
+                href={careersHref}
                 className="group inline-flex items-center gap-3 bg-canvas text-ink text-sm sm:text-base font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime transition-colors"
               >
                 <span>EMAIL US</span>
@@ -230,10 +221,10 @@ export default function CareersPage({ contactEmail, founderEmail, onOpenTalk, jo
                 </span>
               </a>
               <a
-                href={`mailto:${contactEmail}`}
+                href={`mailto:${careersEmail}`}
                 className="text-sm sm:text-base font-bold text-chalk-2 hover:text-lime transition-colors"
               >
-                {contactEmail}
+                {careersEmail}
               </a>
             </div>
           </div>
