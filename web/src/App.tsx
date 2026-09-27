@@ -1174,62 +1174,104 @@ export default function App() {
       {brands.length > 0 && (
         <section
           id="brands"
-          className="relative overflow-hidden bg-paper border-b border-black/10 py-24 sm:py-32 px-gutter"
+          className="relative overflow-hidden bg-paper border-b border-black/10 py-24 sm:py-32"
         >
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto px-gutter">
             {/* Eyebrow row */}
             <div className="flex items-center justify-between gap-4 text-[11px] font-mono font-bold uppercase tracking-meta text-mute mb-12 sm:mb-16">
               <span className="flex items-center gap-3">
                 <span className="w-8 h-px bg-mute/60" aria-hidden="true" />
                 WORK WITH BRANDS
               </span>
-              <span className="hidden sm:inline">MAKE NOISE OUTSIDE.</span>
+              <span className="hidden sm:flex items-center gap-3">
+                <span className="w-8 h-px bg-lime" aria-hidden="true" />
+                MAKE NOISE OUTSIDE.
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-              {/* Headline */}
-              <div className="lg:col-span-7">
-                <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
-                  THE BRANDS<br />
-                  THAT TRUST US<br />
-                  <span className="block font-hand text-lime normal-case tracking-normal leading-none text-5xl sm:text-6xl lg:text-7xl mt-3 -rotate-2">
-                    GO OUTSIDE.
-                  </span>
-                </h2>
-                <p className="mt-8 text-lg sm:text-xl text-body leading-relaxed max-w-md">
-                  We work with brands that want more than just visibility. We turn their ideas into real-world impact.
-                </p>
-              </div>
-
-              {/* Footnote */}
-              <div className="lg:col-span-5 lg:pt-28">
-                <p className="text-xs font-mono uppercase tracking-meta text-mute leading-relaxed border-l-2 border-lime pl-4 max-w-xs">
-                  From street corners to city screens. We bring brands closer to people.
-                </p>
-              </div>
+            {/* Headline. Held to 7 of 12 columns so the tilted logo ribbon
+                below can climb into the empty right-hand corner. */}
+            <div className="lg:w-7/12">
+              <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
+                THE BRANDS<br />
+                THAT TRUST US<br />
+                <span className="block font-hand text-lime normal-case tracking-normal leading-none text-5xl sm:text-6xl lg:text-7xl mt-3 -rotate-2">
+                  GO OUTSIDE.
+                </span>
+              </h2>
+              <p className="mt-8 text-lg sm:text-xl text-body leading-relaxed max-w-md">
+                We work with brands that want more than just visibility. We turn their ideas into real-world impact.
+              </p>
             </div>
           </div>
 
-          {/* Tilted logo marquee */}
-          <div className="relative mt-16 sm:mt-20 overflow-hidden">
-            <div className="-rotate-3 w-[120%] -ml-[10%]">
-              <div className="flex w-max animate-marquee motion-reduce:animate-none hover:[animation-play-state:paused]">
+          {/* --------------------------------------------------
+              TILTED LOGO RIBBON
+              Full-bleed band that rises left-to-right across the section and
+              overlaps the headline's empty right column. Logos ride it at
+              full strength — no grayscale, no dimming — because the wall IS
+              the social proof. Legibility at the frame edges comes from a
+              mask on the outer (unrotated) rail, so the fade tracks the
+              screen edge rather than the tilted track.
+          -------------------------------------------------- */}
+          <div
+            className="relative mt-12 lg:-mt-16 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+          >
+            {/* Lime trajectory arrow, riding just above the ribbon's climb. */}
+            <svg
+              className="hidden lg:block absolute right-[22%] top-2 w-56 h-14 text-lime pointer-events-none"
+              viewBox="0 0 224 56"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 52C54 40 120 22 208 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M188 12L210 5L204 26"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+
+            <div className="relative -rotate-[5deg] sm:-rotate-[7deg] lg:-rotate-[9deg] w-[135%] -ml-[17.5%] py-7 sm:py-9">
+              {/* Ribbon plate: a white lift off the paper band, feathered top
+                  and bottom so it reads as a ribbon rather than a boxed strip. */}
+              <div
+                className="absolute inset-0 bg-gradient-to-b from-canvas/0 via-canvas to-canvas/0 shadow-[0_34px_70px_-44px_rgb(0_0_0/0.55)]"
+                aria-hidden="true"
+              />
+              <div
+                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"
+                aria-hidden="true"
+              />
+              <div
+                className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent"
+                aria-hidden="true"
+              />
+
+              <div className="relative flex w-max animate-marquee motion-reduce:animate-none hover:[animation-play-state:paused]">
                 {[...brands, ...brands].map((brand, index) => {
                   const mark = (
                     <img
                       src={brand.logo}
                       alt={brand.name}
                       loading="lazy"
-                      className="h-full w-auto max-w-[160px] object-contain grayscale opacity-70 transition hover:opacity-100 hover:grayscale-0"
+                      className="h-full w-auto max-w-[200px] sm:max-w-[240px] object-contain transition-transform duration-300 hover:scale-105"
                     />
                   )
                   return (
                     <div
                       key={`${brand.id}-${index}`}
-                      className="shrink-0 flex items-center justify-center h-9 sm:h-11 px-8 sm:px-12"
+                      className="shrink-0 flex items-center justify-center h-14 sm:h-20 lg:h-24 px-8 sm:px-12 lg:px-16"
                     >
                       {brand.url ? (
-                        <a href={brand.url} target="_blank" rel="noreferrer">
+                        <a href={brand.url} target="_blank" rel="noreferrer" className="block h-full">
                           {mark}
                         </a>
                       ) : (
@@ -1242,8 +1284,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* CTA */}
-          <div className="max-w-7xl mx-auto mt-14 sm:mt-16">
+          {/* Closing row: CTA left, footnote right — the reference's bottom rail. */}
+          <div className="max-w-7xl mx-auto px-gutter mt-16 sm:mt-24 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-10">
             <button
               type="button"
               onClick={() => handleOpenTalk()}
@@ -1255,6 +1297,10 @@ export default function App() {
                 →
               </span>
             </button>
+
+            <p className="text-xs font-mono uppercase tracking-meta text-mute leading-relaxed border-l-2 border-lime pl-4 max-w-xs">
+              From street corners to city screens. We bring brands closer to people.
+            </p>
           </div>
         </section>
       )}
