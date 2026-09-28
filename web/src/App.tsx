@@ -159,21 +159,26 @@ export default function App() {
       const totalFrames = Math.max(1, Math.round(duration * FPS) - 1);
       let frame = Math.round(videoProgress * totalFrames);
 
-      // Backward movement is allowed only for a deliberate scroll up. Safari
-      // shifts scrollY while the URL bar collapses, which read as scrolling up
-      // and let the clip rewind. The discriminator is the viewport height, NOT
-      // the size of the jump: a toolbar jolt is LARGER than a slow deliberate
-      // drag, so raising the px tolerance would pass the jolt through and block
-      // the drag. It stays at 2px; the height check does the real work.
       const y = window.scrollY;
       const viewportHeight = viewport ? viewport.height : window.innerHeight;
       const viewportChanged = Math.abs(viewportHeight - lastViewportHeight) > 1;
       lastViewportHeight = viewportHeight;
-      // Height settles before scroll does, so extend the refusal past the
-      // transition rather than trusting this single frame.
-      if (viewportChanged) lockUntil = performance.now() + 400;
 
-      const scrollingUp = !viewportChanged && y < lastScrollY - 2;
+      if (viewportChanged) {
+        // The URL bar is mid-transition and Safari is shifting scrollY itself,
+        // so this tick's delta is not the finger. Re-baseline and hold the
+        // current frame. Deliberately NOT a timed lock: on iOS the bar
+        // reappears *because* the user scrolled up, so a lock outliving the
+        // transition blocks the very gesture it is supposed to allow.
+        lastScrollY = y;
+        return;
+      }
+
+      // Backward movement is allowed only for a deliberate scroll up, with 2px
+      // of tolerance. Widening that would be backwards — a toolbar jolt is
+      // larger than a slow drag, so a bigger threshold passes the jolt and
+      // blocks the drag. The viewport check above is the real discriminator.
+      const scrollingUp = y < lastScrollY - 2;
       lastScrollY = y;
       if (!scrollingUp || performance.now() < lockUntil) {
         frame = Math.max(frame, appliedFrame);
