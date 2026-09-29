@@ -1723,7 +1723,7 @@ export default function App() {
                       placeholder="e.g. Acme Corp"
                       value={formData.brandName}
                       onChange={(e) => setFormData({ ...formData, brandName: e.target.value })}
-                      className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                      className="w-full px-4 py-3 border border-black/20 focus:border-ink focus:outline-none focus:ring-2 focus:ring-lime bg-paper"
                     />
                   </div>
 
@@ -1738,7 +1738,7 @@ export default function App() {
                         placeholder="brand@company.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                        className="w-full px-4 py-3 border border-black/20 focus:border-ink focus:outline-none focus:ring-2 focus:ring-lime bg-paper"
                       />
                     </div>
 
@@ -1754,7 +1754,7 @@ export default function App() {
                         placeholder="+880 1XXX-XXXXXX"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                        className="w-full px-4 py-3 border border-black/20 focus:border-ink focus:outline-none focus:ring-2 focus:ring-lime bg-paper"
                       />
                     </div>
                   </div>
@@ -1767,7 +1767,7 @@ export default function App() {
                       <select
                         value={formData.format}
                         onChange={(e) => setFormData({ ...formData, format: e.target.value })}
-                        className="w-full px-3 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                        className="w-full px-3 py-3 border border-black/20 focus:border-ink focus:outline-none focus:ring-2 focus:ring-lime bg-paper"
                       >
                         {formatOptions.map((option) => (
                           <option key={option} value={option}>
@@ -1784,7 +1784,7 @@ export default function App() {
                       <select
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        className="w-full px-3 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                        className="w-full px-3 py-3 border border-black/20 focus:border-ink focus:outline-none focus:ring-2 focus:ring-lime bg-paper"
                       >
                         {cityOptions.map((option) => (
                           <option key={option} value={option}>
@@ -1804,14 +1804,14 @@ export default function App() {
                       placeholder="What would you like people to notice? (Target launch, footfall corridor, or core message)"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-3 border border-black/20 focus:border-black focus:outline-none bg-paper"
+                      className="w-full px-4 py-3 border border-black/20 focus:border-ink focus:outline-none focus:ring-2 focus:ring-lime bg-paper"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={formStatus === 'submitting'}
-                    className="w-full py-4 bg-ink text-chalk font-bold uppercase tracking-btn hover:bg-lime hover:text-ink transition-colors mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full py-4 bg-lime text-ink font-bold uppercase tracking-btn hover:bg-lime-lo focus-visible:outline-ink transition-colors mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {formStatus === 'submitting' ? 'SENDING…' : 'SEND INQUIRY →'}
                   </button>
