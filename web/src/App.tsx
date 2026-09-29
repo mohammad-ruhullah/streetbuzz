@@ -718,7 +718,11 @@ export default function App() {
           <div className="border-b border-ink pb-8 mb-16">
             <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
               FROM BRIEF<br />
-              TO STREET.
+              TO STREET
+              <span
+                className="inline-block ml-2 sm:ml-3 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-lime dot-ping"
+                aria-hidden="true"
+              />
             </h2>
           </div>
 
@@ -1133,7 +1137,11 @@ export default function App() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
               IDEAS LOOK BETTER<br />
-              OUTSIDE.
+              OUTSIDE
+              <span
+                className="inline-block ml-2 sm:ml-3 w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 bg-lime dot-ping"
+                aria-hidden="true"
+              />
             </h2>
 
             {/* Filter pills — derived from the data, never hardcoded */}
