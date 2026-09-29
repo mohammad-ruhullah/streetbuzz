@@ -119,6 +119,36 @@
    @utility (not a bare .class) so these compose with variants: md:bg-grain etc.
    ========================================================================== */
 
+/* Section-eyebrow "live signal" marker. The dot itself stays solid; a ring
+   pushes out of it and fades, so the page reads as broadcasting rather than
+   flickering. Colour and shape come from the element's own bg-* and rounded-*
+   via inherit, so one utility serves the lime circles and the rounded-square
+   eyebrow alike. The global prefers-reduced-motion block below clamps this to a
+   single 0.01ms cycle, leaving a plain static dot.
+
+   The keyframes sit at top level, NOT in @theme like fade-in/rise-in/marquee.
+   Those back --animate-* tokens whose generated animate-* classes appear in
+   markup; this animation is referenced from inside a custom utility, so a
+   @theme definition risks being tree-shaken as unused. */
+@utility dot-ping {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: inherit;
+    animation: dot-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes dot-ping {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(2.8); opacity: 0; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
 @utility bg-grain {
   background-image: radial-gradient(rgb(0 0 0 / 0.04) 1px, transparent 0);
   background-size: 24px 24px;

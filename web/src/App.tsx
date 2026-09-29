@@ -619,7 +619,7 @@ export default function App() {
           <div className="lg:col-span-7 flex flex-col justify-between">
             {/* Small label above */}
             <div className="flex items-center gap-3 mb-6">
-              <span className="w-2 h-2 rounded-full bg-ink" />
+              <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
               <p className="text-xs sm:text-sm font-bold uppercase tracking-label text-ink/70">
                 CREATIVE OUTDOOR MARKETING
               </p>
@@ -783,7 +783,7 @@ export default function App() {
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="mb-10 sm:mb-14">
             <span className="inline-flex items-center gap-2 px-3 py-1 bg-ink-4 text-lime text-xs font-mono font-bold uppercase tracking-label border border-edge-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-lime" aria-hidden="true" />
+              <span className="w-1.5 h-1.5 rounded-full bg-lime dot-ping" aria-hidden="true" />
               THE STREET IS MEDIA.
             </span>
           </div>
@@ -988,7 +988,7 @@ export default function App() {
             <div className="lg:col-span-6 flex flex-col justify-center">
               {/* Small label */}
               <div className="flex items-center gap-3 mb-6">
-                <span className="w-2 h-2 rounded-full bg-lime" />
+                <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
                 <span className="text-xs font-bold uppercase tracking-label text-chalk/70">
                   ONE OF OUR FORMATS
                 </span>
@@ -1063,7 +1063,7 @@ export default function App() {
           <div className="mt-16 sm:mt-20 pt-10 border-t border-edge">
             <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-lime" aria-hidden="true" />
+                <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
                 <h3 className="text-xs font-bold uppercase tracking-label text-chalk">
                   DEPLOYMENT COVERAGE
                 </h3>
@@ -1380,7 +1380,7 @@ export default function App() {
               </h2>
 
               <div className="mt-8 flex items-center gap-3">
-                <span className="w-3 h-3 rounded-xs bg-lime shrink-0" />
+                <span className="w-3 h-3 rounded-xs bg-lime shrink-0 dot-ping" aria-hidden="true" />
                 <span className="text-xs font-mono font-bold uppercase tracking-meta text-ink">
                   ESTABLISHED 2026 / INDEPENDENT CREATIVE AGENCY
                 </span>

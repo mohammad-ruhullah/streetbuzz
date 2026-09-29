@@ -49,7 +49,7 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
       <section className="pt-hero-top pb-20 sm:pb-28 px-gutter border-b border-black/10">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
-            <span className="w-2 h-2 rounded-full bg-lime" aria-hidden="true" />
+            <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
             <p className="text-xs sm:text-sm font-bold uppercase tracking-label text-ink/70">
               CAREERS AT STREETBUZZ
             </p>
@@ -142,7 +142,7 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
             /* Empty state — no active roles in the CMS */
             <div className="border border-black/10 bg-canvas px-6 py-16 sm:px-12 sm:py-20 text-center">
               <span className="inline-flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-meta text-mute mb-6">
-                <span className="w-2 h-2 rounded-full bg-lime" aria-hidden="true" />
+                <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
                 CURRENTLY HIRING
               </span>
               <h3 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink">
