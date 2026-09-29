@@ -619,7 +619,7 @@ export default function App() {
           <div className="lg:col-span-7 flex flex-col justify-between">
             {/* Small label above */}
             <div className="flex items-center gap-3 mb-6">
-              <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
+              <span className="w-2 h-2 rounded-full bg-ink dot-ping" aria-hidden="true" />
               <p className="text-xs sm:text-sm font-bold uppercase tracking-label text-ink/70">
                 CREATIVE OUTDOOR MARKETING
               </p>
