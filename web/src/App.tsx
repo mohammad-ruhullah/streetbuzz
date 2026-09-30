@@ -1288,16 +1288,20 @@ export default function App() {
             <div className="lg:w-7/12">
               <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
                 {/* SEEN and REMEMBERED carry the script treatment the GO OUTSIDE
-                    line used to. Sized in em so they scale with the fluid
-                    display type, and nudged up because Caveat's cap height sits
-                    lower than the display face at the same font-size. */}
+                    line used to, now boxed on ink — the same lime-on-ink
+                    highlight the careers hero uses, which reads at ~18:1 against
+                    this paper band. Sized in em so they scale with the fluid
+                    display type, and nudged to 1.15em because Caveat's cap
+                    height sits lower than the display face at the same
+                    font-size. leading-none keeps the box tight to the glyphs so
+                    the two boxed lines do not collide under leading-display. */}
                 BRANDS THAT WANT TO BE{' '}
-                <span className="font-hand text-lime normal-case tracking-normal text-[1.15em]">
+                <span className="inline-block bg-ink text-lime font-hand normal-case tracking-normal text-[1.15em] leading-none px-3 sm:px-4 py-1 my-1">
                   SEEN.
                 </span>
                 <br />
                 AND{' '}
-                <span className="font-hand text-lime normal-case tracking-normal text-[1.15em]">
+                <span className="inline-block bg-ink text-lime font-hand normal-case tracking-normal text-[1.15em] leading-none px-3 sm:px-4 py-1 my-1">
                   REMEMBERED.
                 </span>
               </h2>
