@@ -129,11 +129,6 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
   const handleSubmitApplication = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    if (!cv) {
-      setError('Please attach your CV.')
-      return
-    }
-
     setStatus('submitting')
     setError('')
 
@@ -141,7 +136,7 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
     for (const [key, value] of Object.entries(application)) {
       body.append(key, value)
     }
-    body.append('cv', cv)
+    if (cv) body.append('cv', cv)
 
     try {
       const response = await fetch('/api/apply', { method: 'POST', body })
@@ -355,7 +350,6 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                     <input
                       id="apply-name"
                       type="text"
-                      required
                       placeholder="Your full name"
                       value={application.fullName}
                       onChange={(e) => setField('fullName', e.target.value)}
@@ -367,7 +361,6 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                     <input
                       id="apply-email"
                       type="email"
-                      required
                       placeholder="Where can we reach you?"
                       value={application.email}
                       onChange={(e) => setField('email', e.target.value)}
@@ -380,7 +373,6 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                       id="apply-phone"
                       type="tel"
                       inputMode="tel"
-                      required
                       placeholder="Your phone number"
                       value={application.phone}
                       onChange={(e) => setField('phone', e.target.value)}
@@ -391,14 +383,11 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                   <Field number="04" label="WHAT ARE YOU INTO?" htmlFor="apply-discipline">
                     <select
                       id="apply-discipline"
-                      required
                       value={application.discipline}
                       onChange={(e) => setField('discipline', e.target.value)}
                       className={FIELD_CLASS}
                     >
-                      <option value="" disabled>
-                        Select one
-                      </option>
+                      <option value="">Select one</option>
                       {DISCIPLINES.map((option) => (
                         <option key={option} value={option}>
                           {option}
@@ -411,7 +400,6 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                     <input
                       id="apply-portfolio"
                       type="url"
-                      required
                       placeholder="Portfolio / LinkedIn / Instagram / Website"
                       value={application.portfolioUrl}
                       onChange={(e) => setField('portfolioUrl', e.target.value)}
@@ -477,7 +465,6 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                     <textarea
                       id="apply-why"
                       rows={4}
-                      required
                       placeholder="Tell us in your own words..."
                       value={application.whyStreetbuzz}
                       onChange={(e) => setField('whyStreetbuzz', e.target.value)}

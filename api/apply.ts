@@ -85,10 +85,26 @@ export default {
     const whyStreetbuzz = text(form, 'whyStreetbuzz')
     const dreamProject = text(form, 'dreamProject')
 
-    if (!fullName || !email || !phone || !discipline || !portfolioUrl || !whyStreetbuzz) {
-      return fail('Please fill in every required field.')
+    // Every field is optional by design. The only thing refused is a wholly
+    // empty submission: with nothing required, an unattended POST would
+    // otherwise file a blank document and send a blank email on every hit.
+    const cvField = form.get('cv')
+    const hasCv = cvField instanceof File && cvField.size > 0
+    const anyAnswer = [
+      fullName,
+      email,
+      phone,
+      discipline,
+      portfolioUrl,
+      whyStreetbuzz,
+      dreamProject,
+    ].some(Boolean)
+    if (!anyAnswer && !hasCv) {
+      return fail('Please tell us something about yourself before sending.')
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+
+    // Absence is fine; a malformed value is not.
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return fail('That email address does not look right.')
     }
     if (
@@ -103,19 +119,19 @@ export default {
       return fail('One of the answers is too long.')
     }
 
-    const cv = form.get('cv')
-    if (!(cv instanceof File) || cv.size === 0) {
-      return fail('Please attach your CV.')
-    }
-    if (cv.size > MAX_CV_BYTES) {
-      return fail('That CV is larger than 4MB. Please upload a smaller file.')
-    }
-    const filename = cv.name || 'cv'
-    const match = ALLOWED_CV.find(
-      (allowed) => filename.toLowerCase().endsWith(allowed.ext) && cv.type === allowed.mime,
-    )
-    if (!match) {
-      return fail('Your CV must be a PDF, DOC or DOCX file.')
+    const cv = hasCv ? (cvField as File) : null
+    let match: (typeof ALLOWED_CV)[number] | undefined
+    if (cv) {
+      if (cv.size > MAX_CV_BYTES) {
+        return fail('That CV is larger than 4MB. Please upload a smaller file.')
+      }
+      const filename = cv.name || 'cv'
+      match = ALLOWED_CV.find(
+        (allowed) => filename.toLowerCase().endsWith(allowed.ext) && cv.type === allowed.mime,
+      )
+      if (!match) {
+        return fail('Your CV must be a PDF, DOC or DOCX file.')
+      }
     }
 
     const client = createClient({
@@ -128,25 +144,37 @@ export default {
 
     let cvUrl = ''
     try {
-      const buffer = Buffer.from(await cv.arrayBuffer())
-      const asset = await client.assets.upload('file', buffer, {
-        filename,
-        contentType: match.mime,
-      })
-      cvUrl = asset.url
-
-      await client.create({
+      // `_type` must stay statically known for client.create()'s type, so it
+      // is intersected in rather than widened away by Record<string, unknown>.
+      const document: { _type: string } & Record<string, unknown> = {
         _type: 'application',
         submittedAt: new Date().toISOString(),
+      }
+      // Leave blanks out entirely rather than storing empty strings, so a
+      // sparse application reads as sparse in Studio.
+      for (const [key, value] of Object.entries({
         fullName,
         email,
         phone,
         discipline,
         portfolioUrl,
         whyStreetbuzz,
-        dreamProject: dreamProject || undefined,
-        cv: { _type: 'file', asset: { _type: 'reference', _ref: asset._id } },
-      })
+        dreamProject,
+      })) {
+        if (value) document[key] = value
+      }
+
+      if (cv && match) {
+        const buffer = Buffer.from(await cv.arrayBuffer())
+        const asset = await client.assets.upload('file', buffer, {
+          filename: cv.name || 'cv',
+          contentType: match.mime,
+        })
+        cvUrl = asset.url
+        document.cv = { _type: 'file', asset: { _type: 'reference', _ref: asset._id } }
+      }
+
+      await client.create(document)
     } catch (error) {
       console.error('[apply] Sanity write failed:', error)
       return fail('We could not save your application. Please try again.', 502)
@@ -167,15 +195,16 @@ export default {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: web3formsKey,
-          subject: `New StreetBuzz Application — ${fullName}`,
+          subject: `New StreetBuzz Application — ${fullName || 'Unnamed applicant'}`,
           from_name: 'StreetBuzz Careers',
-          name: fullName,
-          email,
-          phone,
-          discipline,
-          portfolio: portfolioUrl,
-          cv: cvUrl,
-          why_streetbuzz: whyStreetbuzz,
+          name: fullName || '—',
+          // Web3Forms treats `email` as the reply-to, so only send a real one.
+          ...(email ? { email } : {}),
+          phone: phone || '—',
+          discipline: discipline || '—',
+          portfolio: portfolioUrl || '—',
+          cv: cvUrl || 'No CV attached',
+          why_streetbuzz: whyStreetbuzz || '—',
           dream_project: dreamProject || '—',
           botcheck: false,
         }),
