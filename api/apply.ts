@@ -1,17 +1,23 @@
 /**
  * POST /api/apply — careers application intake.
  *
- * Uploads the CV to Sanity, files an `application` document, then notifies
- * Web3Forms. Runs as a Vercel Function because it needs a Sanity write token,
- * which must never reach the browser bundle.
+ * Uploads the CV to Sanity, files an `application` document, then emails the
+ * careers inbox via Resend with the CV attached. Runs as a Vercel Function
+ * because it needs a Sanity write token and a Resend key, neither of which may
+ * reach the browser bundle.
+ *
+ * Resend rather than Web3Forms because Web3Forms puts attachments behind its
+ * PRO plan, so the CV could only be linked, not attached. The inquiry modal on
+ * the home page still uses Web3Forms client-side and is unaffected.
  *
  * Uses the Web-standard `fetch` export, which Vercel's Node runtime supports in
  * /api. That gives native `request.formData()` for the multipart body, so no
  * parser dependency is needed.
  *
  * Required env (server-side, no VITE_ prefix):
- *   SANITY_PROJECT_ID, SANITY_DATASET, SANITY_WRITE_TOKEN, WEB3FORMS_CAREERS_KEY
- * Optional: SANITY_API_VERSION
+ *   SANITY_PROJECT_ID, SANITY_DATASET, SANITY_WRITE_TOKEN,
+ *   RESEND_API_KEY, CAREERS_NOTIFY_EMAIL
+ * Optional: SANITY_API_VERSION, RESEND_FROM
  */
 import { createClient } from '@sanity/client'
 
@@ -58,6 +64,15 @@ function parseLinks(raw: string): string[] {
     .filter(Boolean)
     .map((link) => (/^https?:\/\//i.test(link) ? link : `https://${link}`))
     .slice(0, 10)
+}
+
+/** Applicant text goes into an HTML email, so it must not carry markup through. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 function text(form: FormData, key: string): string {
@@ -159,6 +174,9 @@ export default {
     })
 
     let cvUrl = ''
+    // Held outside the try so the notification below can attach the same bytes
+    // rather than asking Resend to fetch the Sanity URL.
+    let cvBuffer: Buffer | null = null
     try {
       // `_type` must stay statically known for client.create()'s type, so it
       // is intersected in rather than widened away by Record<string, unknown>.
@@ -181,8 +199,8 @@ export default {
       if (portfolioLinks.length) document.portfolioLinks = portfolioLinks
 
       if (cv && match) {
-        const buffer = Buffer.from(await cv.arrayBuffer())
-        const asset = await client.assets.upload('file', buffer, {
+        cvBuffer = Buffer.from(await cv.arrayBuffer())
+        const asset = await client.assets.upload('file', cvBuffer, {
           filename: cv.name || 'cv',
           contentType: match.mime,
         })
@@ -199,37 +217,70 @@ export default {
     // The application is already safely recorded. A failed notification must
     // never be reported to the candidate as a failed application, so anything
     // past this point is logged, not surfaced.
-    const web3formsKey = process.env.WEB3FORMS_CAREERS_KEY
-    if (!web3formsKey) {
-      console.error('[apply] WEB3FORMS_CAREERS_KEY not set — application saved, no email sent')
+    const resendKey = process.env.RESEND_API_KEY
+    const notifyTo = process.env.CAREERS_NOTIFY_EMAIL
+    if (!resendKey || !notifyTo) {
+      console.error(
+        '[apply] RESEND_API_KEY or CAREERS_NOTIFY_EMAIL not set — application saved, no email sent',
+      )
       return json({ success: true }, 200)
     }
 
+    const rows: [string, string][] = (
+      [
+        ['Name', fullName],
+        ['Email', email],
+        ['Phone', phone],
+        ['What they are into', discipline],
+        ['Links', portfolioLinks.join(', ')],
+        ['Why StreetBuzz', whyStreetbuzz],
+        ['Would love to build', dreamProject],
+        ['CV in Studio', cvUrl],
+      ] as [string, string][]
+    ).filter(([, value]) => value)
+
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: {
+          Authorization: `Bearer ${resendKey}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          access_key: web3formsKey,
+          from: process.env.RESEND_FROM || 'StreetBuzz Careers <careers@wearestreetbuzz.com>',
+          to: notifyTo,
           subject: `New StreetBuzz Application — ${fullName || 'Unnamed applicant'}`,
-          from_name: 'StreetBuzz Careers',
-          name: fullName || '—',
-          // Web3Forms treats `email` as the reply-to, so only send a real one.
-          ...(email ? { email } : {}),
-          phone: phone || '—',
-          discipline: discipline || '—',
-          portfolio: portfolioLinks.join('\n') || '—',
-          cv: cvUrl || 'No CV attached',
-          why_streetbuzz: whyStreetbuzz || '—',
-          dream_project: dreamProject || '—',
-          botcheck: false,
+          // So the client can answer the candidate straight from the notification.
+          ...(email ? { reply_to: email } : {}),
+          text: rows.map(([label, value]) => `${label}:\n${value}`).join('\n\n'),
+          html: rows
+            .map(
+              ([label, value]) =>
+                `<p style="margin:0 0 16px"><strong>${escapeHtml(label)}</strong><br>` +
+                `${escapeHtml(value).replace(/\n/g, '<br>')}</p>`,
+            )
+            .join(''),
+          // Base64 from the bytes already in memory, rather than handing Resend
+          // the Sanity URL to fetch — no dependence on CDN propagation, and it
+          // still works if the asset is not publicly reachable.
+          ...(cvBuffer && cv
+            ? {
+                attachments: [
+                  {
+                    filename: cv.name || 'cv',
+                    content: cvBuffer.toString('base64'),
+                    ...(match ? { content_type: match.mime } : {}),
+                  },
+                ],
+              }
+            : {}),
         }),
       })
       if (!response.ok) {
-        console.error('[apply] Web3Forms responded', response.status)
+        console.error('[apply] Resend responded', response.status, await response.text())
       }
     } catch (error) {
-      console.error('[apply] Web3Forms notification failed:', error)
+      console.error('[apply] Resend notification failed:', error)
     }
 
     return json({ success: true }, 200)
