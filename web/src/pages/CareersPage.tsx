@@ -328,19 +328,12 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
       <section id="apply" className="py-24 sm:py-32 px-gutter">
         <div className="max-w-7xl mx-auto">
           <div className="bg-ink text-chalk p-8 sm:p-14">
-            <h2 className="text-cta font-black uppercase tracking-mega leading-mega">
-              READY TO<br />
-              MAKE SOME<br />
-              <span className="inline-block">
-                NOISE?
-                <span className="inline-block ml-3 w-4 h-4 sm:w-6 sm:h-6 bg-lime" aria-hidden="true" />
-              </span>
-            </h2>
-
             {status === 'success' ? (
-              <div className="mt-10 max-w-xl">
+              /* The headline is the call to apply, so it retires once they have.
+                 Only the confirmation remains. */
+              <div className="max-w-xl">
                 <p className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-lime">
-                  YOU&rsquo;RE IN OUR INBOX. <span aria-hidden="true">👀</span>
+                  YOU&rsquo;RE IN OUR INBOX.
                 </p>
                 <p className="mt-4 text-lg text-chalk-2 leading-relaxed">
                   Thanks for reaching out. If there&rsquo;s a fit, we&rsquo;ll be in touch.
@@ -348,6 +341,18 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
               </div>
             ) : (
               <>
+                <h2 className="text-cta font-black uppercase tracking-mega leading-mega">
+                  READY TO<br />
+                  MAKE SOME<br />
+                  <span className="inline-block">
+                    NOISE?
+                    <span
+                      className="inline-block ml-3 w-4 h-4 sm:w-6 sm:h-6 bg-lime"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </h2>
+
                 <p className="mt-8 text-lg sm:text-xl text-chalk-2 max-w-xl leading-relaxed">
                   Tell us a little about yourself.<br />
                   The rest, we can figure out together.
