@@ -1022,19 +1022,19 @@ export default function App() {
               {/* Clean key specs list */}
               <div className="grid grid-cols-2 gap-4 py-6 border-y border-edge mb-8 text-xs font-mono text-chalk-3">
                 <div>
-                  <span className="block text-chalk font-bold text-sm mb-0.5">DOUBLE SIDED</span>
+                  <span className="block text-lime font-bold text-sm mb-0.5">DOUBLE SIDED</span>
                   <span>Dual poster impact panels</span>
                 </div>
                 <div>
-                  <span className="block text-chalk font-bold text-sm mb-0.5">ZERO EMISSION</span>
+                  <span className="block text-lime font-bold text-sm mb-0.5">ZERO EMISSION</span>
                   <span>100% human-powered eco mobility</span>
                 </div>
                 <div>
-                  <span className="block text-chalk font-bold text-sm mb-0.5">TARGETED ROUTES</span>
+                  <span className="block text-lime font-bold text-sm mb-0.5">TARGETED ROUTES</span>
                   <span>Direct pedestrian saturation</span>
                 </div>
                 <div>
-                  <span className="block text-chalk font-bold text-sm mb-0.5">BRAND AMBASSADORS</span>
+                  <span className="block text-lime font-bold text-sm mb-0.5">BRAND AMBASSADORS</span>
                   <span>Trained uniformed cyclists</span>
                 </div>
               </div>
