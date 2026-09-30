@@ -46,6 +46,12 @@ const client = createClient({
   apiVersion,
   useCdn: false,
   perspective: 'published',
+  // Only needed once the dataset is private. Careers applications live in the
+  // same dataset and hold personal data, so a public dataset would let anyone
+  // query them. Content is read here at BUILD time and baked into
+  // content.json, so going private costs nothing at runtime — just this token
+  // in the build environment.
+  token: process.env.SANITY_READ_TOKEN,
 })
 
 const imageBuilder = createImageUrlBuilder(client)

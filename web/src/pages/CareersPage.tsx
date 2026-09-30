@@ -5,7 +5,13 @@
  * mobile menu and LET'S TALK modal behave exactly as on the home page.
  * Open roles come from Sanity (`job` documents); when there are none, a
  * designed empty state is shown instead of a blank list.
+ *
+ * The closing block is the application form. It posts multipart/form-data to
+ * /api/apply, which stores the CV in Sanity and notifies the careers inbox —
+ * the browser never sees a Sanity token.
  */
+import { useState } from 'react'
+
 import type { JobItem } from '@/content'
 
 interface CareersPageProps {
@@ -36,12 +42,121 @@ const PRINCIPLES = [
   },
 ]
 
+const DISCIPLINES = [
+  'Creative & Content',
+  'Marketing & Strategy',
+  'Operations',
+  'Sales & Business',
+  'Design',
+  'Something Else',
+]
+
+/** Mirrors the server cap in api/apply.ts. The server is the actual gate. */
+const MAX_CV_BYTES = 4 * 1024 * 1024
+const ALLOWED_CV_EXT = ['.pdf', '.doc', '.docx']
+
+/** Form controls on the ink panel. Lime reads ~18:1 on ink, so unlike the
+ *  white inquiry modal the ring here is a genuine focus indicator. */
+const FIELD_CLASS =
+  'w-full px-4 py-3 bg-ink-2 border border-edge text-chalk placeholder:text-chalk-3 ' +
+  'focus:border-chalk-3 focus:outline-none focus:ring-2 focus:ring-lime transition-colors'
+
+const EMPTY_APPLICATION = {
+  fullName: '',
+  email: '',
+  phone: '',
+  discipline: '',
+  portfolioUrl: '',
+  whyStreetbuzz: '',
+  dreamProject: '',
+  botcheck: '',
+}
+
+function Field({
+  number,
+  label,
+  htmlFor,
+  hint,
+  children,
+}: {
+  number: string
+  label: string
+  htmlFor: string
+  hint?: string
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      <label htmlFor={htmlFor} className="block mb-3">
+        <span className="text-[11px] font-mono font-bold uppercase tracking-meta text-lime">
+          {number}
+        </span>
+        <span className="ml-3 text-xs font-bold uppercase tracking-label text-chalk">{label}</span>
+      </label>
+      {hint && <p className="-mt-1 mb-3 text-sm text-chalk-3 leading-relaxed">{hint}</p>}
+      {children}
+    </div>
+  )
+}
+
 export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
   const applyHref = (email: string, roleTitle: string) =>
     `mailto:${email || careersEmail}?subject=${encodeURIComponent(`Application — ${roleTitle}`)}`
 
-  /* EMAIL US opens the visitor's mail client on the careers inbox. */
-  const careersHref = `mailto:${careersEmail}?subject=${encodeURIComponent('Careers — StreetBuzz')}`
+  const [application, setApplication] = useState(EMPTY_APPLICATION)
+  const [cv, setCv] = useState<File | null>(null)
+  const [dragging, setDragging] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [error, setError] = useState('')
+
+  const setField = (key: keyof typeof EMPTY_APPLICATION, value: string) =>
+    setApplication((previous) => ({ ...previous, [key]: value }))
+
+  /** Fast feedback only — api/apply re-checks extension, MIME and size. */
+  const selectCv = (file: File) => {
+    if (!ALLOWED_CV_EXT.some((ext) => file.name.toLowerCase().endsWith(ext))) {
+      setError('Your CV must be a PDF, DOC or DOCX file.')
+      return
+    }
+    if (file.size > MAX_CV_BYTES) {
+      setError('That CV is larger than 4MB. Please upload a smaller file.')
+      return
+    }
+    setError('')
+    setCv(file)
+  }
+
+  const handleSubmitApplication = async (event: React.FormEvent) => {
+    event.preventDefault()
+
+    if (!cv) {
+      setError('Please attach your CV.')
+      return
+    }
+
+    setStatus('submitting')
+    setError('')
+
+    const body = new FormData()
+    for (const [key, value] of Object.entries(application)) {
+      body.append(key, value)
+    }
+    body.append('cv', cv)
+
+    try {
+      const response = await fetch('/api/apply', { method: 'POST', body })
+      const result = await response.json()
+      if (result.success) {
+        setStatus('success')
+      } else {
+        setStatus('error')
+        setError(result.message || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setStatus('error')
+      setError('Network error. Please check your connection and try again.')
+    }
+  }
 
   return (
     <main id="careers-page" className="bg-paper">
@@ -194,8 +309,8 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
         </div>
       </section>
 
-      {/* CLOSING CTA */}
-      <section className="py-24 sm:py-32 px-gutter">
+      {/* APPLICATION FORM */}
+      <section id="apply" className="py-24 sm:py-32 px-gutter">
         <div className="max-w-7xl mx-auto">
           <div className="bg-ink text-chalk p-8 sm:p-14">
             <h2 className="text-cta font-black uppercase tracking-mega leading-mega">
@@ -206,27 +321,212 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                 <span className="inline-block ml-3 w-4 h-4 sm:w-6 sm:h-6 bg-lime" aria-hidden="true" />
               </span>
             </h2>
-            <p className="mt-8 text-lg sm:text-xl text-chalk-2 max-w-xl leading-relaxed">
-              Tell us what you make and what you want to make next. Portfolio, reel or a plain
-              message — all welcome.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-6">
-              <a
-                href={careersHref}
-                className="group inline-flex items-center gap-3 bg-canvas text-ink text-sm sm:text-base font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime transition-colors"
-              >
-                <span>EMAIL US</span>
-                <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">
-                  →
-                </span>
-              </a>
-              <a
-                href={`mailto:${careersEmail}`}
-                className="text-sm sm:text-base font-bold text-chalk-2 hover:text-lime transition-colors"
-              >
-                {careersEmail}
-              </a>
-            </div>
+
+            {status === 'success' ? (
+              <div className="mt-10 max-w-xl">
+                <p className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-lime">
+                  YOU&rsquo;RE IN OUR INBOX. <span aria-hidden="true">👀</span>
+                </p>
+                <p className="mt-4 text-lg text-chalk-2 leading-relaxed">
+                  Thanks for reaching out. If there&rsquo;s a fit, we&rsquo;ll be in touch.
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="mt-8 text-lg sm:text-xl text-chalk-2 max-w-xl leading-relaxed">
+                  Tell us a little about yourself.<br />
+                  The rest, we can figure out together.
+                </p>
+
+                <form onSubmit={handleSubmitApplication} className="mt-12 max-w-2xl space-y-8">
+                  {/* Honeypot — hidden from people, irresistible to bots. */}
+                  <input
+                    type="text"
+                    name="botcheck"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="hidden"
+                    value={application.botcheck}
+                    onChange={(e) => setField('botcheck', e.target.value)}
+                  />
+
+                  <Field number="01" label="YOUR NAME" htmlFor="apply-name">
+                    <input
+                      id="apply-name"
+                      type="text"
+                      required
+                      placeholder="Your full name"
+                      value={application.fullName}
+                      onChange={(e) => setField('fullName', e.target.value)}
+                      className={FIELD_CLASS}
+                    />
+                  </Field>
+
+                  <Field number="02" label="EMAIL" htmlFor="apply-email">
+                    <input
+                      id="apply-email"
+                      type="email"
+                      required
+                      placeholder="Where can we reach you?"
+                      value={application.email}
+                      onChange={(e) => setField('email', e.target.value)}
+                      className={FIELD_CLASS}
+                    />
+                  </Field>
+
+                  <Field number="03" label="PHONE" htmlFor="apply-phone">
+                    <input
+                      id="apply-phone"
+                      type="tel"
+                      inputMode="tel"
+                      required
+                      placeholder="Your phone number"
+                      value={application.phone}
+                      onChange={(e) => setField('phone', e.target.value)}
+                      className={FIELD_CLASS}
+                    />
+                  </Field>
+
+                  <Field number="04" label="WHAT ARE YOU INTO?" htmlFor="apply-discipline">
+                    <select
+                      id="apply-discipline"
+                      required
+                      value={application.discipline}
+                      onChange={(e) => setField('discipline', e.target.value)}
+                      className={FIELD_CLASS}
+                    >
+                      <option value="" disabled>
+                        Select one
+                      </option>
+                      {DISCIPLINES.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+
+                  <Field number="05" label="SHOW US YOUR WORK" htmlFor="apply-portfolio">
+                    <input
+                      id="apply-portfolio"
+                      type="url"
+                      required
+                      placeholder="Portfolio / LinkedIn / Instagram / Website"
+                      value={application.portfolioUrl}
+                      onChange={(e) => setField('portfolioUrl', e.target.value)}
+                      className={FIELD_CLASS}
+                    />
+                  </Field>
+
+                  <Field number="06" label="YOUR CV" htmlFor="apply-cv">
+                    {/* The styled box is a <label> for a real file input, which
+                        stays in the DOM — so keyboard and screen-reader users get
+                        a working control, not a div that only responds to drops. */}
+                    <label
+                      htmlFor="apply-cv"
+                      onDragOver={(event) => {
+                        event.preventDefault()
+                        setDragging(true)
+                      }}
+                      onDragLeave={() => setDragging(false)}
+                      onDrop={(event) => {
+                        event.preventDefault()
+                        setDragging(false)
+                        const dropped = event.dataTransfer.files?.[0]
+                        if (dropped) selectCv(dropped)
+                      }}
+                      className={`flex flex-col items-center justify-center gap-1 w-full px-4 py-10 border border-dashed cursor-pointer transition-colors ${
+                        dragging ? 'border-lime bg-lime/5' : 'border-edge-2 hover:border-chalk-3'
+                      }`}
+                    >
+                      <span className="text-sm font-bold uppercase tracking-btn text-chalk text-center break-all">
+                        {cv ? cv.name : '+ Drop your CV here'}
+                      </span>
+                      <span className="text-[11px] font-mono uppercase tracking-meta text-chalk-3">
+                        {cv ? `${(cv.size / 1024 / 1024).toFixed(1)} MB` : 'PDF, DOC or DOCX'}
+                      </span>
+                      <input
+                        id="apply-cv"
+                        type="file"
+                        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        className="sr-only"
+                        onChange={(event) => {
+                          const picked = event.target.files?.[0]
+                          if (picked) selectCv(picked)
+                        }}
+                      />
+                    </label>
+                    {cv && (
+                      <button
+                        type="button"
+                        onClick={() => setCv(null)}
+                        className="mt-2 text-[11px] font-mono uppercase tracking-meta text-chalk-3 hover:text-lime transition-colors"
+                      >
+                        Remove file
+                      </button>
+                    )}
+                  </Field>
+
+                  <Field
+                    number="07"
+                    label="ONE LAST THING"
+                    htmlFor="apply-why"
+                    hint="Why do you want to build with STREETBUZZ? No corporate answers required."
+                  >
+                    <textarea
+                      id="apply-why"
+                      rows={4}
+                      required
+                      placeholder="Tell us in your own words..."
+                      value={application.whyStreetbuzz}
+                      onChange={(e) => setField('whyStreetbuzz', e.target.value)}
+                      className={FIELD_CLASS}
+                    />
+                  </Field>
+
+                  <div className="pt-8 border-t border-edge">
+                    <Field
+                      number="OPTIONAL"
+                      label="BUT VERY STREETBUZZ"
+                      htmlFor="apply-dream"
+                      hint="What’s something you’d love to build if you had the chance?"
+                    >
+                      <textarea
+                        id="apply-dream"
+                        rows={3}
+                        placeholder="We’re listening..."
+                        value={application.dreamProject}
+                        onChange={(e) => setField('dreamProject', e.target.value)}
+                        className={FIELD_CLASS}
+                      />
+                    </Field>
+                  </div>
+
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={status === 'submitting'}
+                      className="group inline-flex items-center gap-3 bg-lime text-ink text-sm sm:text-base font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime-lo focus-visible:outline-chalk transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <span>{status === 'submitting' ? 'SENDING…' : 'SEND IT OUTSIDE'}</span>
+                      <span
+                        className="transition-transform group-hover:translate-x-1"
+                        aria-hidden="true"
+                      >
+                        →
+                      </span>
+                    </button>
+
+                    {error && (
+                      <p role="alert" className="mt-4 text-sm font-bold text-lime">
+                        {error}
+                      </p>
+                    )}
+                  </div>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </section>
