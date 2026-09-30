@@ -23,4 +23,12 @@ export const structure: StructureResolver = (S) =>
             .title('Applications')
             .defaultOrdering([{ field: 'submittedAt', direction: 'desc' }]),
         ),
+      S.listItem()
+        .title('Campaign Inquiries')
+        .id('inquiries')
+        .child(
+          S.documentTypeList('inquiry')
+            .title('Campaign Inquiries')
+            .defaultOrdering([{ field: 'submittedAt', direction: 'desc' }]),
+        ),
     ])

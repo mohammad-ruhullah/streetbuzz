@@ -388,44 +388,54 @@ export default function App() {
   const handleSubmitInquiry = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY;
-    if (!accessKey) {
-      setFormStatus('error');
-      setFormError('The inquiry form is not configured yet (missing Web3Forms access key).');
-      return;
-    }
-
     setFormStatus('submitting');
     setFormError('');
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      // Posts to our own function rather than straight to a form service, so
+      // the inquiry is recorded in Sanity before any email is attempted. A
+      // lead that fails to send is then still on file instead of lost.
+      const response = await fetch('/api/inquiry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          access_key: accessKey,
-          subject: `New StreetBuzz Inquiry — ${formData.brandName || 'Untitled brand'}`,
-          from_name: 'StreetBuzz Website',
-          brand: formData.brandName,
+          brandName: formData.brandName,
           email: formData.email,
           phone: formData.phone,
           format: formData.format,
           city: formData.city,
           message: formData.message,
-          botcheck: false,
+          botcheck: '',
         }),
       });
 
-      const result = await response.json();
+      // Read as text first: parsing inside the outer catch would report a
+      // crashed or missing endpoint as a network error.
+      const raw = await response.text();
+      let result: { success?: boolean; message?: string };
+      try {
+        result = JSON.parse(raw);
+      } catch {
+        console.error('[inquiry] Non-JSON response', response.status, raw.slice(0, 500));
+        setFormStatus('error');
+        setFormError(
+          response.status === 404
+            ? 'The inquiry endpoint is not deployed (404). Please email us directly.'
+            : `The server returned ${response.status} instead of a result. Please try again.`,
+        );
+        return;
+      }
+
       if (result.success) {
         setFormStatus('success');
       } else {
         setFormStatus('error');
         setFormError(result.message || 'Something went wrong. Please try again.');
       }
-    } catch {
+    } catch (requestError) {
+      console.error('[inquiry] Request failed', requestError);
       setFormStatus('error');
-      setFormError('Network error. Please check your connection and try again.');
+      setFormError('Could not reach the server. Please check your connection and try again.');
     }
   };
 

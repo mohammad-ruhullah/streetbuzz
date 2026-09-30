@@ -7,8 +7,9 @@
  * reach the browser bundle.
  *
  * Resend rather than Web3Forms because Web3Forms puts attachments behind its
- * PRO plan, so the CV could only be linked, not attached. The inquiry modal on
- * the home page still uses Web3Forms client-side and is unaffected.
+ * PRO plan, so the CV could only be linked, not attached. The LET'S TALK
+ * inquiry form now follows the same pattern in api/inquiry.ts, so Web3Forms is
+ * no longer used anywhere.
  *
  * Uses the Web-standard `fetch` export, which Vercel's Node runtime supports in
  * /api. That gives native `request.formData()` for the multipart body, so no
