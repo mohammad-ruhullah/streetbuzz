@@ -396,10 +396,19 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                     </select>
                   </Field>
 
-                  <Field number="05" label="SHOW US YOUR WORK" htmlFor="apply-portfolio">
+                  <Field
+                    number="05"
+                    label="SHOW US YOUR WORK"
+                    htmlFor="apply-portfolio"
+                    hint="One or more links, separated by commas. No need to type https://"
+                  >
+                    {/* Deliberately not type="url": that rejects the way people
+                        actually type a link (linkedin.com/in/me) and refuses more
+                        than one outright. The server adds the scheme and splits
+                        the list instead. */}
                     <input
                       id="apply-portfolio"
-                      type="url"
+                      type="text"
                       placeholder="Portfolio / LinkedIn / Instagram / Website"
                       value={application.portfolioUrl}
                       onChange={(e) => setField('portfolioUrl', e.target.value)}

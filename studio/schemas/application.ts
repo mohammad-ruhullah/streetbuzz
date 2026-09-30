@@ -44,9 +44,12 @@ export const application = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'portfolioUrl',
+      name: 'portfolioLinks',
       title: 'Portfolio / LinkedIn / Instagram / Website',
-      type: 'url',
+      type: 'array',
+      of: [{ type: 'url' }],
+      description:
+        'One text box on the form, split on commas and newlines. A missing https:// is added on submit.',
     }),
     defineField({
       name: 'cv',

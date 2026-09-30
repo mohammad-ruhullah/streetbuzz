@@ -45,6 +45,21 @@ function fail(message: string, status = 400): Response {
   return json({ success: false, message }, status)
 }
 
+/**
+ * "Show us your work" is a single text box that may hold several links.
+ * Split on commas and newlines, and add a scheme where one is missing so
+ * `linkedin.com/in/me` — the way people actually type it — still stores as a
+ * working link rather than being rejected.
+ */
+function parseLinks(raw: string): string[] {
+  return raw
+    .split(/[\n,]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((link) => (/^https?:\/\//i.test(link) ? link : `https://${link}`))
+    .slice(0, 10)
+}
+
 function text(form: FormData, key: string): string {
   const value = form.get(key)
   return typeof value === 'string' ? value.trim() : ''
@@ -82,6 +97,7 @@ export default {
     const phone = text(form, 'phone')
     const discipline = text(form, 'discipline')
     const portfolioUrl = text(form, 'portfolioUrl')
+    const portfolioLinks = parseLinks(portfolioUrl)
     const whyStreetbuzz = text(form, 'whyStreetbuzz')
     const dreamProject = text(form, 'dreamProject')
 
@@ -157,12 +173,12 @@ export default {
         email,
         phone,
         discipline,
-        portfolioUrl,
         whyStreetbuzz,
         dreamProject,
       })) {
         if (value) document[key] = value
       }
+      if (portfolioLinks.length) document.portfolioLinks = portfolioLinks
 
       if (cv && match) {
         const buffer = Buffer.from(await cv.arrayBuffer())
@@ -202,7 +218,7 @@ export default {
           ...(email ? { email } : {}),
           phone: phone || '—',
           discipline: discipline || '—',
-          portfolio: portfolioUrl || '—',
+          portfolio: portfolioLinks.join('\n') || '—',
           cv: cvUrl || 'No CV attached',
           why_streetbuzz: whyStreetbuzz || '—',
           dream_project: dreamProject || '—',
