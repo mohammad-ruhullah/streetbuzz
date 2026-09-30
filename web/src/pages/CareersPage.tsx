@@ -140,16 +140,36 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
 
     try {
       const response = await fetch('/api/apply', { method: 'POST', body })
-      const result = await response.json()
+
+      // Read as text first. Parsing inside the outer catch would report a
+      // crashed or missing endpoint as a network error, which is what sent the
+      // first live failure down the wrong path.
+      const raw = await response.text()
+      let result: { success?: boolean; message?: string }
+      try {
+        result = JSON.parse(raw)
+      } catch {
+        console.error('[apply] Non-JSON response', response.status, raw.slice(0, 500))
+        setStatus('error')
+        setError(
+          response.status === 404
+            ? 'The application endpoint is not deployed (404). Please let us know.'
+            : `The server returned ${response.status} instead of a result. Please try again.`,
+        )
+        return
+      }
+
       if (result.success) {
         setStatus('success')
       } else {
         setStatus('error')
         setError(result.message || 'Something went wrong. Please try again.')
       }
-    } catch {
+    } catch (requestError) {
+      // Only a genuine transport failure reaches here now.
+      console.error('[apply] Request failed', requestError)
       setStatus('error')
-      setError('Network error. Please check your connection and try again.')
+      setError('Could not reach the server. Please check your connection and try again.')
     }
   }
 
