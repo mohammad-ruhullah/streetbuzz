@@ -1260,7 +1260,7 @@ export default function App() {
 
       {/* --------------------------------------------------
           BRAND COLLABORATIONS
-          "BRANDS THAT WANT TO BE SEEN. / AND REMEMBERED. / GO OUTSIDE." social-proof wall.
+          "BRANDS THAT WANT TO BE SEEN. / AND REMEMBERED." social-proof wall.
           Logos are `brand` documents from Sanity via the content layer; the
           committed fallback holds demo partner logos. Hidden entirely when the
           list is empty so the band never renders blank.
@@ -1287,10 +1287,18 @@ export default function App() {
                 below can climb into the empty right-hand corner. */}
             <div className="lg:w-7/12">
               <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
-                BRANDS THAT WANT TO BE SEEN.<br />
-                AND REMEMBERED.<br />
-                <span className="block font-hand text-lime normal-case tracking-normal leading-none text-5xl sm:text-6xl lg:text-7xl mt-3 -rotate-2">
-                  GO OUTSIDE.
+                {/* SEEN and REMEMBERED carry the script treatment the GO OUTSIDE
+                    line used to. Sized in em so they scale with the fluid
+                    display type, and nudged up because Caveat's cap height sits
+                    lower than the display face at the same font-size. */}
+                BRANDS THAT WANT TO BE{' '}
+                <span className="font-hand text-lime normal-case tracking-normal text-[1.15em]">
+                  SEEN.
+                </span>
+                <br />
+                AND{' '}
+                <span className="font-hand text-lime normal-case tracking-normal text-[1.15em]">
+                  REMEMBERED.
                 </span>
               </h2>
               <p className="mt-8 text-lg sm:text-xl text-body leading-relaxed max-w-md">
