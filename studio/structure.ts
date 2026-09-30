@@ -14,4 +14,13 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('adCycleZone').title('AdCycle Zones'),
       S.documentTypeListItem('brand').title('Brand Collaborations'),
       S.documentTypeListItem('job').title('Careers — Open Roles'),
+      S.divider(),
+      S.listItem()
+        .title('Careers — Applications')
+        .id('applications')
+        .child(
+          S.documentTypeList('application')
+            .title('Applications')
+            .defaultOrdering([{ field: 'submittedAt', direction: 'desc' }]),
+        ),
     ])
