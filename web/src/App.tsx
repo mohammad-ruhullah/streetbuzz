@@ -1260,7 +1260,7 @@ export default function App() {
 
       {/* --------------------------------------------------
           BRAND COLLABORATIONS
-          "THE BRANDS THAT TRUST US / GO OUTSIDE." social-proof wall.
+          "BRANDS THAT WANT TO BE SEEN. / AND REMEMBERED. / GO OUTSIDE." social-proof wall.
           Logos are `brand` documents from Sanity via the content layer; the
           committed fallback holds demo partner logos. Hidden entirely when the
           list is empty so the band never renders blank.
@@ -1287,14 +1287,15 @@ export default function App() {
                 below can climb into the empty right-hand corner. */}
             <div className="lg:w-7/12">
               <h2 className="text-display font-black uppercase tracking-display leading-display text-ink">
-                THE BRANDS<br />
-                THAT TRUST US<br />
+                BRANDS THAT WANT TO BE SEEN.<br />
+                AND REMEMBERED.<br />
                 <span className="block font-hand text-lime normal-case tracking-normal leading-none text-5xl sm:text-6xl lg:text-7xl mt-3 -rotate-2">
                   GO OUTSIDE.
                 </span>
               </h2>
               <p className="mt-8 text-lg sm:text-xl text-body leading-relaxed max-w-md">
-                We work with brands that want more than just visibility. We turn their ideas into real-world impact.
+                We take ideas out of the feed and into the real world, turning streets, spaces
+                and everyday moments into brand experiences.
               </p>
             </div>
           </div>
@@ -1356,7 +1357,8 @@ export default function App() {
             </button>
 
             <p className="text-xs font-mono uppercase tracking-meta text-mute leading-relaxed border-l-2 border-lime pl-4 max-w-xs">
-              From street corners to city screens. We bring brands closer to people.
+              We put creativity where life happens: on streets, in spaces and everywhere
+              people look.
             </p>
           </div>
         </section>
