@@ -19,6 +19,11 @@ import heroVideo from './assets/images/hero_video.mp4';
 import logoStreetbuzz from './assets/images/logo_streetbuzz.png';
 import logoWhite from './assets/images/logo_white.png';
 
+/* The signature format. It has its own section and modal rather than a `service`
+   document, so it is pinned into the inquiry Format list by hand while every
+   other option derives from the CMS. */
+const ADCYCLE_FORMAT = 'AdCycle — Mobile Advertising Bicycle';
+
 interface ProcessStep {
   number: string;
   title: string;
@@ -57,7 +62,7 @@ export default function App() {
     brandName: '',
     email: '',
     phone: '',
-    format: 'AdCycle — Mobile Advertising Bicycle',
+    format: ADCYCLE_FORMAT,
     city: 'Chattogram',
     message: ''
   });
@@ -375,13 +380,25 @@ export default function App() {
   const visibleProjects =
     projectFilter === 'ALL' ? projects : projects.filter((p) => p.tags.includes(projectFilter));
 
-  // Form dropdowns come from Site Settings. If the CMS lists are empty, keep the
-  // currently selected value as the only option so the controlled select never
-  // renders blank.
-  const formatOptions =
-    siteSettings.formFormatOptions.length > 0
-      ? siteSettings.formFormatOptions
-      : [formData.format];
+  // Format options are DERIVED from the services in the CMS, never hand-kept —
+  // the same rule the portfolio filter pills follow. Adding a service in Sanity
+  // adds the option here, so the two can no longer drift.
+  //
+  // A union rather than an override: Site Settings -> Inquiry Form Format
+  // Options is almost certainly already populated, so letting it win would mean
+  // the derivation silently never runs and a new service still goes missing.
+  // The trade is that the CMS can no longer REMOVE a service from the dropdown.
+  //
+  // AdCycle is pinned first: it is the signature format with its own section and
+  // modal rather than a `service` document, so deriving alone would drop it.
+  const formatOptions = [
+    ADCYCLE_FORMAT,
+    ...services.map((service) => service.title),
+    ...siteSettings.formFormatOptions,
+  ].filter((option, index, all) => Boolean(option) && all.indexOf(option) === index);
+
+  // City has no underlying document type to derive from, so it stays as the CMS
+  // lists it. Falls back to the selected value so the select never renders blank.
   const cityOptions =
     siteSettings.formCityOptions.length > 0 ? siteSettings.formCityOptions : [formData.city];
 
@@ -1927,7 +1944,7 @@ export default function App() {
               <button
                 onClick={() => {
                   setAdCycleModalOpen(false);
-                  handleOpenTalk('AdCycle — Mobile Advertising Bicycle');
+                  handleOpenTalk(ADCYCLE_FORMAT);
                 }}
                 className="w-full sm:w-auto px-8 py-3.5 bg-lime text-ink text-xs font-extrabold uppercase tracking-widest hover:bg-canvas transition-colors"
               >
