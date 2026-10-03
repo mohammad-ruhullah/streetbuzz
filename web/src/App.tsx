@@ -875,9 +875,6 @@ export default function App() {
             <p className="text-xs font-bold uppercase tracking-label text-black/60 mb-2">SERVICES & CAPABILITIES</p>
             <h2 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-tight">WHAT WE DO</h2>
           </div>
-          <p className="text-xs sm:text-sm font-mono text-black/60 uppercase tracking-widest">
-            06 CORE REAL-WORLD DISCIPLINES
-          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
