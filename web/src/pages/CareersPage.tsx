@@ -198,9 +198,10 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
           </h1>
 
           <p className="mt-8 text-lg sm:text-xl text-body leading-relaxed max-w-2xl">
-            We are a small, independent outdoor advertising crew building real-world campaigns across
-            Bangladesh. If you would rather make things people can touch, walk past and remember —
-            you are in the right place.
+            We build physical thunder across Bangladesh. Outdoor advertising is our domain, and we
+            create unignorable street-level moments that stop traffic and stick in minds. If
+            you&rsquo;re allergic to desk jobs and want to build things people physically run into
+            every single day, you&rsquo;ve found your people.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-6">
