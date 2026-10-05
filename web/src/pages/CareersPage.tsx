@@ -567,7 +567,7 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                 PREFER EMAIL?
               </p>
               <h3 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-ink">
-                SEND US YOUR WORK DIRECTLY
+                SEND US YOUR PORTFOLIO/CV DIRECTLY
               </h3>
             </div>
 
