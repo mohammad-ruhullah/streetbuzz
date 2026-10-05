@@ -103,6 +103,9 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
   const applyHref = (email: string, roleTitle: string) =>
     `mailto:${email || careersEmail}?subject=${encodeURIComponent(`Application — ${roleTitle}`)}`
 
+  /* For anyone who would rather write to us than fill in the form. */
+  const careersHref = `mailto:${careersEmail}?subject=${encodeURIComponent('Careers — StreetBuzz')}`
+
   const [application, setApplication] = useState(EMPTY_APPLICATION)
   const [cv, setCv] = useState<File | null>(null)
   const [dragging, setDragging] = useState(false)
@@ -548,6 +551,38 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
                 </form>
               </>
             )}
+          </div>
+
+          {/* Kept outside the success branch: still useful after someone has
+              applied, and it is the only route for anyone who would rather not
+              use the form at all. */}
+          <div className="mt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-label text-black/60 mb-2">
+                PREFER EMAIL?
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-ink">
+                SEND US YOUR WORK DIRECTLY
+              </h3>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-6">
+              <a
+                href={careersHref}
+                className="group inline-flex items-center gap-3 bg-ink text-chalk text-xs sm:text-sm font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime hover:text-ink transition-colors duration-200"
+              >
+                <span>EMAIL US</span>
+                <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">
+                  →
+                </span>
+              </a>
+              <a
+                href={`mailto:${careersEmail}`}
+                className="text-sm sm:text-base font-bold text-ink border-b-2 border-transparent hover:border-lime pb-1 transition-colors"
+              >
+                {careersEmail}
+              </a>
+            </div>
           </div>
         </div>
       </section>
