@@ -1681,9 +1681,15 @@ export default function App() {
                 </p>
                 <a
                   href={`mailto:${siteSettings.contactEmail}`}
-                  className="block text-base sm:text-lg font-bold text-chalk hover:text-lime transition-colors mb-6"
+                  className="block text-base sm:text-lg font-bold text-chalk hover:text-lime transition-colors mb-1"
                 >
                   {siteSettings.contactEmail}
+                </a>
+                <a
+                  href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`}
+                  className="block text-base sm:text-lg font-bold text-chalk hover:text-lime transition-colors mb-6"
+                >
+                  {siteSettings.phone}
                 </a>
 
                 <p className="text-xs font-mono uppercase tracking-label text-chalk-3 mb-3">
