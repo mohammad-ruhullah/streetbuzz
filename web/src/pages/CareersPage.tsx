@@ -558,7 +558,11 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
               use the form at all. */}
           <div className="mt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div>
-              <p className="text-xs font-bold uppercase tracking-label text-black/60 mb-2">
+              {/* Lime as a dot, not as text: on this paper band lime reads at
+                  ~1.1:1 and would be effectively invisible. Same eyebrow
+                  pattern the rest of the site uses on light sections. */}
+              <p className="flex items-center gap-3 text-xs font-bold uppercase tracking-label text-black/60 mb-2">
+                <span className="w-2 h-2 rounded-full bg-lime dot-ping" aria-hidden="true" />
                 PREFER EMAIL?
               </p>
               <h3 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-ink">
