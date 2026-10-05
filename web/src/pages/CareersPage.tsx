@@ -22,23 +22,27 @@ interface CareersPageProps {
 const PRINCIPLES = [
   {
     number: '01',
-    title: 'REAL-WORLD IMPACT',
-    detail: 'Your work leaves the screen and shows up on actual streets, in front of actual people.',
+    title: 'OUT ON THE STREETS',
+    detail:
+      'Instead of getting lost in a digital feed, your campaigns stand tall in the physical world where people can actually touch, see, and talk about them.',
   },
   {
     number: '02',
-    title: 'SMALL, FAST TEAM',
-    detail: 'Ideas move from a sketch to the street in days, not quarters. Everyone owns their part.',
+    title: 'SPEED OVER MEETINGS',
+    detail:
+      'We value momentum. When an idea is brilliant, we get it out onto the street before the excitement even has a chance to fade.',
   },
   {
     number: '03',
-    title: 'CREATIVE FREEDOM',
-    detail: 'We hire people who bring ideas, then get out of their way. Bold beats safe here.',
+    title: 'ROOM TO GO WILD',
+    detail:
+      'We don’t do corporate rules. Bring your most ambitious, unconventional ideas and we give you total freedom to make them happen.',
   },
   {
     number: '04',
-    title: 'KEEP MOVING',
-    detail: 'No bored days. Campaigns, campuses, festivals and city takeovers keep the work alive.',
+    title: 'NON-STOP ENERGY',
+    detail:
+      'No two days are ever the same. You’re constantly building physical experiences and city-scale moments that people talk about all week.',
   },
 ]
 
@@ -303,7 +307,7 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
               WHY STREETBUZZ
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">
-              LIFE ON THE STREET SIDE
+              WE DON&rsquo;T DO BORING
             </h2>
           </div>
 
