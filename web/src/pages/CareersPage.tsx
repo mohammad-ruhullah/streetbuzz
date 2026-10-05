@@ -569,7 +569,7 @@ export default function CareersPage({ careersEmail, jobs }: CareersPageProps) {
             <div className="flex flex-wrap items-center gap-6">
               <a
                 href={careersHref}
-                className="group inline-flex items-center gap-3 bg-ink text-chalk text-xs sm:text-sm font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime hover:text-ink transition-colors duration-200"
+                className="group inline-flex items-center gap-3 bg-lime text-ink text-xs sm:text-sm font-bold uppercase tracking-btn px-8 py-4 hover:bg-lime-lo focus-visible:outline-ink transition-colors duration-200"
               >
                 <span>EMAIL US</span>
                 <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">
