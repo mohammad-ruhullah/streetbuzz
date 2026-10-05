@@ -1474,17 +1474,17 @@ export default function App() {
 
       {/* --------------------------------------------------
           WHY STREETBUZZ
-          Four statements in a clean grid:
-          OUT ON THE STREETS - campaigns in the physical world, not a feed.
-          SPEED OVER MEETINGS - momentum over process.
-          ROOM TO GO WILD - no corporate rules.
-          NON-STOP ENERGY - no two days the same.
+          Use four simple statements in a clean grid:
+          CREATIVE FIRST - We start with the idea.
+          REAL WORLD - We take brands beyond screens.
+          FLEXIBLE - Campaigns designed around your audience.
+          MEMORABLE - Built to make people notice.
       -------------------------------------------------- */}
       <section id="why-streetbuzz" className="py-24 sm:py-32 px-gutter">
         <div className="max-w-7xl mx-auto">
         <div className="mb-16">
-          <span className="text-xs font-bold uppercase tracking-label text-black/60 block mb-2">WHY STREETBUZZ</span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">WE DON&rsquo;T DO BORING</h2>
+          <span className="text-xs font-bold uppercase tracking-label text-black/60 block mb-2">PRINCIPLES</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight">WHY STREETBUZZ</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10">
@@ -1492,10 +1492,8 @@ export default function App() {
           <div className="border-t-2 border-ink pt-6 flex flex-col justify-between">
             <div>
               <span className="text-xs font-mono font-bold text-black/40 block mb-3">01</span>
-              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">OUT ON THE STREETS</h3>
-              <p className="text-base text-body leading-relaxed">
-                Instead of getting lost in a digital feed, your campaigns stand tall in the physical world where people can actually touch, see, and talk about them.
-              </p>
+              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">CREATIVE FIRST</h3>
+              <p className="text-base text-body leading-relaxed">We start with the idea.</p>
             </div>
             <div className="w-6 h-[2px] bg-lime mt-8" />
           </div>
@@ -1503,10 +1501,8 @@ export default function App() {
           <div className="border-t-2 border-ink pt-6 flex flex-col justify-between">
             <div>
               <span className="text-xs font-mono font-bold text-black/40 block mb-3">02</span>
-              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">SPEED OVER MEETINGS</h3>
-              <p className="text-base text-body leading-relaxed">
-                We value momentum. When an idea is brilliant, we get it out onto the street before the excitement even has a chance to fade.
-              </p>
+              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">REAL WORLD</h3>
+              <p className="text-base text-body leading-relaxed">We take brands beyond screens.</p>
             </div>
             <div className="w-6 h-[2px] bg-lime mt-8" />
           </div>
@@ -1514,10 +1510,8 @@ export default function App() {
           <div className="border-t-2 border-ink pt-6 flex flex-col justify-between">
             <div>
               <span className="text-xs font-mono font-bold text-black/40 block mb-3">03</span>
-              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">ROOM TO GO WILD</h3>
-              <p className="text-base text-body leading-relaxed">
-                We don’t do corporate rules. Bring your most ambitious, unconventional ideas and we give you total freedom to make them happen.
-              </p>
+              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">FLEXIBLE</h3>
+              <p className="text-base text-body leading-relaxed">Campaigns designed around your audience.</p>
             </div>
             <div className="w-6 h-[2px] bg-lime mt-8" />
           </div>
@@ -1525,10 +1519,8 @@ export default function App() {
           <div className="border-t-2 border-ink pt-6 flex flex-col justify-between">
             <div>
               <span className="text-xs font-mono font-bold text-black/40 block mb-3">04</span>
-              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">NON-STOP ENERGY</h3>
-              <p className="text-base text-body leading-relaxed">
-                No two days are ever the same. You’re constantly building physical experiences and city-scale moments that people talk about all week.
-              </p>
+              <h3 className="text-xl font-extrabold uppercase tracking-tight mb-3">MEMORABLE</h3>
+              <p className="text-base text-body leading-relaxed">Built to make people notice.</p>
             </div>
             <div className="w-6 h-[2px] bg-lime mt-8" />
           </div>
