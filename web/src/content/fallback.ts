@@ -22,6 +22,7 @@ export const fallbackContent: Content = {
     contactEmail: 'hello@wearestreetbuzz.com',
     founderEmail: 'ceo@wearestreetbuzz.com',
     careersEmail: 'careers@wearestreetbuzz.com',
+    phone: '+8801882223134',
     socials: [
       { label: 'Instagram', url: 'https://instagram.com/wearestreetbuzz' },
       { label: 'Facebook', url: 'https://facebook.com/wearestreetbuzz' },

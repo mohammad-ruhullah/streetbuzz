@@ -30,6 +30,7 @@ export const content: Content = generatedContent
           generatedContent.siteSettings?.founderEmail || fallbackContent.siteSettings.founderEmail,
         careersEmail:
           generatedContent.siteSettings?.careersEmail || fallbackContent.siteSettings.careersEmail,
+        phone: generatedContent.siteSettings?.phone || fallbackContent.siteSettings.phone,
         socials: selectList<SocialLink>(
           generatedContent.siteSettings?.socials,
           fallbackContent.siteSettings.socials,

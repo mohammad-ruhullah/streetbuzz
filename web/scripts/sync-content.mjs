@@ -70,6 +70,7 @@ const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   contactEmail,
   founderEmail,
   careersEmail,
+  phone,
   socials[]{ label, url },
   formFormatOptions,
   formCityOptions
@@ -99,6 +100,7 @@ const DEFAULT_SITE_SETTINGS = {
   contactEmail: 'hello@wearestreetbuzz.com',
   founderEmail: 'ceo@wearestreetbuzz.com',
   careersEmail: 'careers@wearestreetbuzz.com',
+  phone: '+8801882223134',
   socials: [],
   formFormatOptions: [],
   formCityOptions: [],

@@ -20,6 +20,12 @@ export const siteSettings = defineType({
       validation: (rule) => rule.email(),
     }),
     defineField({
+      name: 'phone',
+      title: 'Phone',
+      type: 'string',
+      description: 'Shown in the contact section. Include the country code, e.g. +8801882223134.',
+    }),
+    defineField({
       name: 'careersEmail',
       title: 'Careers Email',
       type: 'string',

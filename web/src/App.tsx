@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Menu, ArrowUpRight, ArrowUp, Mail } from 'lucide-react';
+import { X, Menu, ArrowUpRight, ArrowUp, Mail, Phone } from 'lucide-react';
 
 import { content } from '@/content';
 import type { ProjectItem } from '@/content';
@@ -1592,6 +1592,16 @@ export default function App() {
                   className="text-mute group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
                   aria-hidden="true"
                 />
+              </a>
+
+              {/* tel: strips spaces so the dialler gets a clean number even if
+                  the CMS value is formatted for reading. */}
+              <a
+                href={`tel:${siteSettings.phone.replace(/\s+/g, '')}`}
+                className="group inline-flex items-center gap-2 text-sm sm:text-base font-bold text-ink border-b-2 border-transparent hover:border-lime pb-1 transition-colors"
+              >
+                <Phone size={18} className="text-mute group-hover:text-ink transition-colors" aria-hidden="true" />
+                <span>{siteSettings.phone}</span>
               </a>
             </div>
 
